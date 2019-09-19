@@ -19,6 +19,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/openfaas/faas/watchdog/metrics"
 	"github.com/openfaas/faas/watchdog/types"
 )
 
@@ -58,12 +59,25 @@ func main() {
 		MaxHeaderBytes: 1 << 20, // Max header of 1MB
 	}
 
-	log.Printf("Read/write timeout: %s, %s. Port: %d\n", readTimeout, writeTimeout, config.port)
+	httpMetrics := metrics.NewHttp()
+
+	log.Printf("Timeouts: read: %s, write: %s hard: %s.\n",
+		readTimeout,
+		writeTimeout,
+		config.execTimeout)
+	log.Printf("Listening on port: %d\n", config.port)
+
 	http.HandleFunc("/_/health", makeHealthHandler())
-	http.HandleFunc("/", makeRequestHandler(&config))
+	http.HandleFunc("/", metrics.InstrumentHandler(makeRequestHandler(&config), httpMetrics))
+
+	metricsServer := metrics.MetricsServer{}
+	metricsServer.Register(config.metricsPort)
+
+	cancel := make(chan bool)
+
+	go metricsServer.Serve(cancel)
 
 	shutdownTimeout := config.writeTimeout
-
 	listenUntilShutdown(shutdownTimeout, s, config.suppressLock)
 }
 

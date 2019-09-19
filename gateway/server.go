@@ -10,12 +10,11 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/openfaas/faas/gateway/handlers"
-	"github.com/openfaas/faas/gateway/scaling"
-
 	"github.com/openfaas/faas-provider/auth"
+	"github.com/openfaas/faas/gateway/handlers"
 	"github.com/openfaas/faas/gateway/metrics"
 	"github.com/openfaas/faas/gateway/plugin"
+	"github.com/openfaas/faas/gateway/scaling"
 	"github.com/openfaas/faas/gateway/types"
 	natsHandler "github.com/openfaas/nats-queue-worker/handler"
 )
@@ -35,6 +34,7 @@ func main() {
 
 	log.Printf("Binding to external function provider: %s", config.FunctionsProviderURL)
 
+	// credentials is used for service-to-service auth
 	var credentials *auth.BasicAuthCredentials
 
 	if config.UseBasicAuth {
@@ -58,14 +58,23 @@ func main() {
 	exporter.StartServiceWatcher(*config.FunctionsProviderURL, metricsOptions, "func", servicePollInterval)
 	metrics.RegisterExporter(exporter)
 
-	reverseProxy := types.NewHTTPClientReverseProxy(config.FunctionsProviderURL, config.UpstreamTimeout)
+	reverseProxy := types.NewHTTPClientReverseProxy(config.FunctionsProviderURL,
+		config.UpstreamTimeout,
+		config.MaxIdleConns,
+		config.MaxIdleConnsPerHost)
 
 	loggingNotifier := handlers.LoggingNotifier{}
+
 	prometheusNotifier := handlers.PrometheusFunctionNotifier{
 		Metrics: &metricsOptions,
 	}
+
+	prometheusServiceNotifier := handlers.PrometheusServiceNotifier{
+		ServiceMetrics: metricsOptions.ServiceMetrics,
+	}
+
 	functionNotifiers := []handlers.HTTPNotifier{loggingNotifier, prometheusNotifier}
-	forwardingNotifiers := []handlers.HTTPNotifier{loggingNotifier}
+	forwardingNotifiers := []handlers.HTTPNotifier{loggingNotifier, prometheusServiceNotifier}
 
 	urlResolver := handlers.SingleHostBaseURLResolver{BaseURL: config.FunctionsProviderURL.String()}
 	var functionURLResolver handlers.BaseURLResolver
@@ -80,53 +89,84 @@ func main() {
 		functionURLTransformer = nilURLTransformer
 	}
 
-	faasHandlers.Proxy = handlers.MakeForwardingProxyHandler(reverseProxy, functionNotifiers, functionURLResolver, functionURLTransformer)
+	var serviceAuthInjector handlers.AuthInjector
 
-	faasHandlers.RoutelessProxy = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer)
-	faasHandlers.ListFunctions = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer)
-	faasHandlers.DeployFunction = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer)
-	faasHandlers.DeleteFunction = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer)
-	faasHandlers.UpdateFunction = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer)
-	faasHandlers.QueryFunction = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer)
-	faasHandlers.InfoHandler = handlers.MakeInfoHandler(handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer))
+	if config.UseBasicAuth {
+		serviceAuthInjector = &handlers.BasicAuthInjector{Credentials: credentials}
+	}
 
-	alertHandler := plugin.NewExternalServiceQuery(*config.FunctionsProviderURL, credentials)
-	faasHandlers.Alert = handlers.MakeAlertHandler(alertHandler)
+	decorateExternalAuth := handlers.MakeExternalAuthHandler
+
+	faasHandlers.Proxy = handlers.MakeForwardingProxyHandler(reverseProxy, functionNotifiers, functionURLResolver, functionURLTransformer, nil)
+
+	faasHandlers.ListFunctions = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer, serviceAuthInjector)
+	faasHandlers.DeployFunction = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer, serviceAuthInjector)
+	faasHandlers.DeleteFunction = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer, serviceAuthInjector)
+	faasHandlers.UpdateFunction = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer, serviceAuthInjector)
+	faasHandlers.QueryFunction = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer, serviceAuthInjector)
+	faasHandlers.InfoHandler = handlers.MakeInfoHandler(handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer, serviceAuthInjector))
+	faasHandlers.SecretHandler = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer, serviceAuthInjector)
+
+	alertHandler := plugin.NewExternalServiceQuery(*config.FunctionsProviderURL, serviceAuthInjector)
+	faasHandlers.Alert = handlers.MakeNotifierWrapper(
+		handlers.MakeAlertHandler(alertHandler),
+		forwardingNotifiers,
+	)
+
+	faasHandlers.LogProxyHandler = handlers.NewLogHandlerFunc(*config.LogsProviderURL, config.WriteTimeout)
 
 	if config.UseNATS() {
 		log.Println("Async enabled: Using NATS Streaming.")
-		natsQueue, queueErr := natsHandler.CreateNatsQueue(*config.NATSAddress, *config.NATSPort, natsHandler.DefaultNatsConfig{})
+		maxReconnect := 60
+		interval := time.Second * 2
+
+		defaultNATSConfig := natsHandler.NewDefaultNATSConfig(maxReconnect, interval)
+
+		natsQueue, queueErr := natsHandler.CreateNATSQueue(*config.NATSAddress, *config.NATSPort, defaultNATSConfig)
 		if queueErr != nil {
 			log.Fatalln(queueErr)
 		}
 
-		faasHandlers.QueuedProxy = handlers.MakeCallIDMiddleware(handlers.MakeQueuedProxy(metricsOptions, true, natsQueue, functionURLTransformer))
-		faasHandlers.AsyncReport = handlers.MakeAsyncReport(metricsOptions)
+		faasHandlers.QueuedProxy = handlers.MakeNotifierWrapper(
+			handlers.MakeCallIDMiddleware(handlers.MakeQueuedProxy(metricsOptions, true, natsQueue, functionURLTransformer)),
+			forwardingNotifiers,
+		)
+
+		faasHandlers.AsyncReport = handlers.MakeNotifierWrapper(
+			handlers.MakeAsyncReport(metricsOptions),
+			forwardingNotifiers,
+		)
 	}
 
 	prometheusQuery := metrics.NewPrometheusQuery(config.PrometheusHost, config.PrometheusPort, &http.Client{})
 	faasHandlers.ListFunctions = metrics.AddMetricsHandler(faasHandlers.ListFunctions, prometheusQuery)
 	faasHandlers.Proxy = handlers.MakeCallIDMiddleware(faasHandlers.Proxy)
 
-	faasHandlers.ScaleFunction = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer)
+	faasHandlers.ScaleFunction = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer, serviceAuthInjector)
 
 	if credentials != nil {
+		faasHandlers.Alert =
+			decorateExternalAuth(faasHandlers.Alert, config.UpstreamTimeout, config.AuthProxyURL, config.AuthProxyPassBody)
 		faasHandlers.UpdateFunction =
-			auth.DecorateWithBasicAuth(faasHandlers.UpdateFunction, credentials)
+			decorateExternalAuth(faasHandlers.UpdateFunction, config.UpstreamTimeout, config.AuthProxyURL, config.AuthProxyPassBody)
 		faasHandlers.DeleteFunction =
-			auth.DecorateWithBasicAuth(faasHandlers.DeleteFunction, credentials)
+			decorateExternalAuth(faasHandlers.DeleteFunction, config.UpstreamTimeout, config.AuthProxyURL, config.AuthProxyPassBody)
 		faasHandlers.DeployFunction =
-			auth.DecorateWithBasicAuth(faasHandlers.DeployFunction, credentials)
+			decorateExternalAuth(faasHandlers.DeployFunction, config.UpstreamTimeout, config.AuthProxyURL, config.AuthProxyPassBody)
 		faasHandlers.ListFunctions =
-			auth.DecorateWithBasicAuth(faasHandlers.ListFunctions, credentials)
+			decorateExternalAuth(faasHandlers.ListFunctions, config.UpstreamTimeout, config.AuthProxyURL, config.AuthProxyPassBody)
 		faasHandlers.ScaleFunction =
-			auth.DecorateWithBasicAuth(faasHandlers.ScaleFunction, credentials)
+			decorateExternalAuth(faasHandlers.ScaleFunction, config.UpstreamTimeout, config.AuthProxyURL, config.AuthProxyPassBody)
 		faasHandlers.QueryFunction =
-			auth.DecorateWithBasicAuth(faasHandlers.QueryFunction, credentials)
+			decorateExternalAuth(faasHandlers.QueryFunction, config.UpstreamTimeout, config.AuthProxyURL, config.AuthProxyPassBody)
 		faasHandlers.InfoHandler =
-			auth.DecorateWithBasicAuth(faasHandlers.InfoHandler, credentials)
+			decorateExternalAuth(faasHandlers.InfoHandler, config.UpstreamTimeout, config.AuthProxyURL, config.AuthProxyPassBody)
 		faasHandlers.AsyncReport =
-			auth.DecorateWithBasicAuth(faasHandlers.AsyncReport, credentials)
+			decorateExternalAuth(faasHandlers.AsyncReport, config.UpstreamTimeout, config.AuthProxyURL, config.AuthProxyPassBody)
+		faasHandlers.SecretHandler =
+			decorateExternalAuth(faasHandlers.SecretHandler, config.UpstreamTimeout, config.AuthProxyURL, config.AuthProxyPassBody)
+		faasHandlers.LogProxyHandler =
+			decorateExternalAuth(faasHandlers.LogProxyHandler, config.UpstreamTimeout, config.AuthProxyURL, config.AuthProxyPassBody)
 	}
 
 	r := mux.NewRouter()
@@ -160,12 +200,15 @@ func main() {
 	r.HandleFunc("/system/functions", faasHandlers.UpdateFunction).Methods(http.MethodPut)
 	r.HandleFunc("/system/scale-function/{name:[-a-zA-Z_0-9]+}", faasHandlers.ScaleFunction).Methods(http.MethodPost)
 
+	r.HandleFunc("/system/secrets", faasHandlers.SecretHandler).Methods(http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete)
+	r.HandleFunc("/system/logs", faasHandlers.LogProxyHandler).Methods(http.MethodGet)
+
 	if faasHandlers.QueuedProxy != nil {
 		r.HandleFunc("/async-function/{name:[-a-zA-Z_0-9]+}/", faasHandlers.QueuedProxy).Methods(http.MethodPost)
 		r.HandleFunc("/async-function/{name:[-a-zA-Z_0-9]+}", faasHandlers.QueuedProxy).Methods(http.MethodPost)
 		r.HandleFunc("/async-function/{name:[-a-zA-Z_0-9]+}/{params:.*}", faasHandlers.QueuedProxy).Methods(http.MethodPost)
 
-		r.HandleFunc("/system/async-report", faasHandlers.AsyncReport)
+		r.HandleFunc("/system/async-report", handlers.MakeNotifierWrapper(faasHandlers.AsyncReport, forwardingNotifiers))
 	}
 
 	fs := http.FileServer(http.Dir("./assets/"))
@@ -176,14 +219,15 @@ func main() {
 
 	uiHandler := http.StripPrefix("/ui", fsCORS)
 	if credentials != nil {
-		r.PathPrefix("/ui/").Handler(auth.DecorateWithBasicAuth(uiHandler.ServeHTTP, credentials)).Methods(http.MethodGet)
+		r.PathPrefix("/ui/").Handler(decorateExternalAuth(uiHandler.ServeHTTP, config.UpstreamTimeout, config.AuthProxyURL, config.AuthProxyPassBody)).Methods(http.MethodGet)
 	} else {
 		r.PathPrefix("/ui/").Handler(uiHandler).Methods(http.MethodGet)
 	}
 
-	metricsHandler := metrics.PrometheusHandler()
-	r.Handle("/metrics", metricsHandler)
-	r.HandleFunc("/healthz", handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer)).Methods(http.MethodGet)
+	//Start metrics server in a goroutine
+	go runMetricsServer()
+
+	r.HandleFunc("/healthz", handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer, serviceAuthInjector)).Methods(http.MethodGet)
 
 	r.Handle("/", http.RedirectHandler("/ui/", http.StatusMovedPermanently)).Methods(http.MethodGet)
 
@@ -195,6 +239,29 @@ func main() {
 		WriteTimeout:   config.WriteTimeout,
 		MaxHeaderBytes: http.DefaultMaxHeaderBytes, // 1MB - can be overridden by setting Server.MaxHeaderBytes.
 		Handler:        r,
+	}
+
+	log.Fatal(s.ListenAndServe())
+}
+
+//runMetricsServer Listen on a separate HTTP port for Prometheus metrics to keep this accessible from
+// the internal network only.
+func runMetricsServer() {
+	metricsHandler := metrics.PrometheusHandler()
+	router := mux.NewRouter()
+	router.Handle("/metrics", metricsHandler)
+	router.HandleFunc("/healthz", handlers.HealthzHandler)
+
+	port := 8082
+	readTimeout := 5 * time.Second
+	writeTimeout := 5 * time.Second
+
+	s := &http.Server{
+		Addr:           fmt.Sprintf(":%d", port),
+		ReadTimeout:    readTimeout,
+		WriteTimeout:   writeTimeout,
+		MaxHeaderBytes: http.DefaultMaxHeaderBytes,
+		Handler:        router,
 	}
 
 	log.Fatal(s.ListenAndServe())

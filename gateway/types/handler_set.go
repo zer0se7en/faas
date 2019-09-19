@@ -4,12 +4,14 @@ import "net/http"
 
 // HandlerSet can be initialized with handlers for binding to mux
 type HandlerSet struct {
-	Proxy          http.HandlerFunc
+	// Proxy invokes functions upstream
+	Proxy http.HandlerFunc
+
 	DeployFunction http.HandlerFunc
 	DeleteFunction http.HandlerFunc
 	ListFunctions  http.HandlerFunc
 	Alert          http.HandlerFunc
-	RoutelessProxy http.HandlerFunc
+
 	UpdateFunction http.HandlerFunc
 
 	// QueryFunction - queries the metdata for a function
@@ -26,4 +28,10 @@ type HandlerSet struct {
 
 	// InfoHandler provides version and build info
 	InfoHandler http.HandlerFunc
+
+	// SecretHandler allows secrets to be managed
+	SecretHandler http.HandlerFunc
+
+	// LogProxyHandler allows streaming of logs for functions
+	LogProxyHandler http.HandlerFunc
 }

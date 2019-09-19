@@ -4,6 +4,7 @@
 package types
 
 import (
+	"fmt"
 	"testing"
 	"time"
 )
@@ -259,4 +260,118 @@ func TestRead_BasicAuth_SetTrue(t *testing.T) {
 		t.Logf("config.SecretMountPath, want: %s, got: %s\n", wantSecretsMount, config.SecretMountPath)
 		t.Fail()
 	}
+}
+
+func TestRead_MaxIdleConnsDefaults(t *testing.T) {
+	defaults := NewEnvBucket()
+
+	readConfig := ReadConfig{}
+
+	config := readConfig.Read(defaults)
+
+	if config.MaxIdleConns != 1024 {
+		t.Logf("config.MaxIdleConns, want: %d, got: %d\n", 1024, config.MaxIdleConns)
+		t.Fail()
+	}
+
+	if config.MaxIdleConnsPerHost != 1024 {
+		t.Logf("config.MaxIdleConnsPerHost, want: %d, got: %d\n", 1024, config.MaxIdleConnsPerHost)
+		t.Fail()
+	}
+}
+
+func TestRead_MaxIdleConns_Override(t *testing.T) {
+	defaults := NewEnvBucket()
+
+	readConfig := ReadConfig{}
+	defaults.Setenv("max_idle_conns", fmt.Sprintf("%d", 100))
+	defaults.Setenv("max_idle_conns_per_host", fmt.Sprintf("%d", 2))
+
+	config := readConfig.Read(defaults)
+
+	if config.MaxIdleConns != 100 {
+		t.Logf("config.MaxIdleConns, want: %d, got: %d\n", 100, config.MaxIdleConns)
+		t.Fail()
+	}
+
+	if config.MaxIdleConnsPerHost != 2 {
+		t.Logf("config.MaxIdleConnsPerHost, want: %d, got: %d\n", 2, config.MaxIdleConnsPerHost)
+		t.Fail()
+	}
+}
+
+func TestRead_AuthProxy_Defaults(t *testing.T) {
+	defaults := NewEnvBucket()
+
+	readConfig := ReadConfig{}
+	wantURL := ""
+	wantBody := false
+
+	config := readConfig.Read(defaults)
+
+	if config.AuthProxyPassBody != wantBody {
+		t.Logf("config.AuthProxyPassBody, want: %t, got: %t\n", wantBody, config.AuthProxyPassBody)
+		t.Fail()
+	}
+
+	if config.AuthProxyURL != wantURL {
+		t.Logf("config.AuthProxyURL, want: %s, got: %s\n", wantURL, config.AuthProxyURL)
+		t.Fail()
+	}
+}
+
+func TestRead_AuthProxy_DefaultsOverrides(t *testing.T) {
+	defaults := NewEnvBucket()
+
+	readConfig := ReadConfig{}
+	wantURL := "http://auth.openfaas:8080/validate"
+	wantBody := true
+	defaults.Setenv("auth_proxy_url", wantURL)
+	defaults.Setenv("auth_proxy_pass_body", fmt.Sprintf("%t", wantBody))
+
+	config := readConfig.Read(defaults)
+
+	if config.AuthProxyPassBody != wantBody {
+		t.Logf("config.AuthProxyPassBody, want: %t, got: %t\n", wantBody, config.AuthProxyPassBody)
+		t.Fail()
+	}
+
+	if config.AuthProxyURL != wantURL {
+		t.Logf("config.AuthProxyURL, want: %s, got: %s\n", wantURL, config.AuthProxyURL)
+		t.Fail()
+	}
+}
+
+func TestRead_LogsProviderURL(t *testing.T) {
+	defaults := NewEnvBucket()
+
+	t.Run("default value is nil when functions_provider_url is empty", func(t *testing.T) {
+		readConfig := ReadConfig{}
+		config := readConfig.Read(defaults)
+		if config.LogsProviderURL != nil {
+			t.Fatalf("config.LogsProviderURL, want: %s, got: %s\n", "", config.LogsProviderURL)
+		}
+	})
+
+	t.Run("default value is equal to functions_provider_url", func(t *testing.T) {
+		expected := "functions.example.com"
+		defaults.Setenv("functions_provider_url", expected)
+
+		readConfig := ReadConfig{}
+		config := readConfig.Read(defaults)
+		if config.LogsProviderURL.String() != expected {
+			t.Fatalf("config.LogsProviderURL, want: %s, got: %s\n", expected, config.LogsProviderURL)
+		}
+	})
+
+	t.Run("override by logs_provider_url", func(t *testing.T) {
+		expected := "logs.example.com"
+		defaults.Setenv("logs_provider_url", expected)
+
+		readConfig := ReadConfig{}
+		config := readConfig.Read(defaults)
+		if config.LogsProviderURL.String() != expected {
+			t.Fatalf("config.LogsProviderURL, want: %s, got: %s\n", expected, config.LogsProviderURL)
+		}
+	})
 }
