@@ -129,13 +129,67 @@ If you have a deeply technical request or need help debugging your application t
 
 If you feel there is an issue with OpenFaaS or were unable to get the help you needed from the Slack channels then raise an issue on one of the GitHub repositories.
 
+#### Setting expectations, support and SLAs
+
+* What kind of support can I expect for free?
+
+    If you are using one of the Open Source projects within the openfaas or openfaas-incubator repository, then help is offered on a good-will basis by volunteers. You can also request help from employees of OpenFaaS Ltd who host the OpenFaaS projects.
+
+    Please be respectful of volunteer time, it is often limited to evenings and weekends. The person you are requesting help from may not reside in your timezone. 
+
+    The Slack workspace is the best place to ask questions, suggest features, and to get help. The GitHub issue tracker can be used for suspected issues with the codebase or deployment artifacts.
+
+* Doesn't Open Source mean that everything is free?
+
+    The OpenFaaS projects are licensed as MIT which means that you are free to use, modify and distribute the software within the terms of the license.
+    
+    Contributions, suggestions and feedback is welcomed in the appropriate channels as outlined in this guide. The MIT license does not cover support for PRs, Issues, Slack questions, feature requests and technical support/professional services which you may require; the preceding are not free and have a cost to those providing the services. Where possible, this time may be volunteered for free, but it is not unlimited.
+
+* What is the SLA for my Issue?
+
+    Issues are examined, triaged and answered on a best effort basis by volunteers and community contributors. This means that you may receive an initial response within any time period such as: 1 minute, 1 hour, 1 day, or 1 week. There is no implicit meaning to the time between you raising an issue and it being answered or resolved.
+
+    If you see an issue which does not have a response or does not have a resolution, it does not mean that it is not important, or that it is being ignored. It simply means it has not been worked on by a volunteer yet.
+
+    Please take responsibility for following up on your Issues if you feel further action is required.
+
+* What is the SLA for my Pull Request?
+
+    In a similar way to Issues, Pull Requests are triaged, reviewed, and considered by a team of volunteers - the Core Team,  Members Team and the Project Lead. There are dozens of components that make up the OpenFaaS project and a limited amount of people. Sometimes PRs may become blocked or require further action.
+    
+    Please take responsibility for following up on your Pull Requests if you feel further action is required.
+    
+* Why may your PR be delayed?
+
+    * The contributing guide was not followed in some way
+
+    * The commits are not signed-off (the Derek bot will try to help you)
+
+    * The commits need to be rebased
+
+    * Changes have been requested
+
+    More information, a use-case, or context may be required for the change to be accepted.
+
+* What if I need more than that?
+
+    If you're a company using any of these projects, you can get the following through a support agreement with OpenFaaS Ltd so that the time can be paid for to help your business.
+
+    A support agreement can be tailored to your needs, you may benefit from support, if you need any of the following:
+
+    * responses within N hours/days on issues/PRs
+    * feature prioritisation
+    * urgent help
+    * 1:1 consultations
+    * or any other level of professional services
+
 #### I need to add a dependency
 
 The concept of `vendoring` is used in projects written in Go. This means that a copy of the source-code of dependencies is stored within each repository in the `vendor` folder. It allows for a repeatable build and isolates change.
 
 The chosen tool for vendoring code in the project is [dep](https://github.com/golang/dep).
 
-> Note: despite the availability of [Go modules](https://github.com/golang/go/wiki/Modules) in Go 1.11, they are not being used in the project at this time. If and when the decision is made to move, a complete overhaul of all repositories will need to be made in a coordinated fashion, including regression and integration testing. This is not a trivial task.
+> Note: despite the availability of [Go modules](https://github.com/golang/go/wiki/Modules) in Go 1.11, they are not being used in the project at this time. If and when the decision is made to move, a complete overhaul of all repositories will need to be made in a coordinated fashion including: CI, releases, unit-, integration- and e2e-tests. This is not a trivial amount of effort.
 
 ### How are releases made?
 
@@ -147,9 +201,9 @@ How are credentials managed for quay.io and the Docker Hub? These credentials ar
 
 ## Governance
 
-OpenFaaS is an independent open-source project which was created by the Project Lead Alex Ellis in 2016. OpenFaaS is now being built by Alex, a number of volunteer teams, and a wider community of open-source developers.
+OpenFaaS is an independent open-source project which was created by the Project Lead Alex Ellis in 2016. OpenFaaS is now hosted by OpenFaaS Ltd. The project is maintained and developed by a number of regular volunteers and a wider community of open-source developers.
 
-OpenFaaS Ltd (company no. 11076587) sponsors the development and maintenance of OpenFaaS. OpenFaaS Ltd provides professional services, consultation and support. Email: [sales@openfaas.com](mailto:sales@openfaas.com) to make a query.
+OpenFaaS Ltd (company no. 11076587) hosts and sponsors the development and maintenance of OpenFaaS. OpenFaaS Ltd provides professional services, consultation and support. Email: [sales@openfaas.com](mailto:sales@openfaas.com) to find out more.
 
 OpenFaaS &reg; is a registered trademark in England and Wales.
 
@@ -179,7 +233,6 @@ In the OpenFaaS community there are four levels of structure or maintainership:
 The Core Team includes:
 
 - Alex Ellis (@alexellis)
-- Richard Gee (@rgee0)
 - Stefan Prodan (@stefanprodan)
 - Lucas Roesler (@LucasRoesler)
 - Burton Rheutan (@burtonr)
@@ -189,7 +242,7 @@ The Core Team have the ear of the Project Lead. They help with strategy, project
 
 The Core Team gain access to a private *core* channel and are required to participate on a regular basis.
 
-The Core Team have the same expectations and perks of the Membership Team, in addition will need to keep in close contact with the rest of the Core Team and the Project Lead.
+The Core Team have the same responsibilities and perks of the Membership Team, in addition will need to keep in close contact with the rest of the Core Team and the Project Lead.
 
 * Core Team are expected to attend 1:1 Zoom calls with the Project Lead up to once per month
 * Core Team members will notify the Project Lead and Core Team of any leave of a week or more and set a status in Slack of "away".
@@ -206,7 +259,7 @@ The Members Team are contributors who are well-known to the community with a tra
 * testing and reviewing pull requests
 * joining contributor meetings and supporting new contributors
 
-> Note: An essential skill for being in a team is communication. If you cannot communicate with your team on a regular basis, then membership may not be for you and you are welcome to contribute as community.
+> Note: An essential skill for being in a team is communication. If it is not possible to communicate on a regular basis then, then membership may not be for you. You are welcome to contribute as part of the wider community.
 
 Varying levels of write access are made available via the project bot [Derek](https://github.com/alexellis/derek) to help regular contributors transition to the Members Team.
 
@@ -230,7 +283,7 @@ The Members Team are expected to:
 * comment on and engage with project proposals
 * attend occasional 1:1 meetings with members of the Core Team or the Project Lead
 
-This group is intended to be an active team that shares the load and collaborates together. This means engaging in topics on Slack, encouraging other teammates, sharing ideas, helping the users and raising issues with the Core Team.
+This group is intended to be an active team that shares the load and collaborates together. This means engaging in topics on Slack, working with other teammates, sharing ideas, helping the users and raising issues with the Core Team.
 
 The Members Team will notify their team in the *members* channel about any planned leave of a week or more and set a status in Slack of "away".
 
@@ -294,6 +347,17 @@ The [community.md](https://github.com/openfaas/faas/blob/master/community.md) fi
 There is an Slack community which you are welcome to join to discuss OpenFaaS, OpenFaaS Cloud, Kubernetes, Serverless, FaaS, IoT, and ARM / Raspberry Pi.
 
 [Join Slack here](https://docs.openfaas.com/community/)
+
+Getting the best out of Slack
+
+* Explore the channels and post your question or comment into one of them
+* Don't post the same question into multiple channels if you don't get an answer immediately
+* Slack is asynchronous and you may not receive an answer to your question. Commercial support is available, but you are also welcome to ask the question again or in a different way after a reasonable amount of time has passed.
+* Shorter, specific questions are more likely to be answered than longer bodies of text
+* If you can share a code example, it may improve the chances of getting help. There is no need to share confidential code, instead try to create a small sample that reproduces the issue.
+
+* Please be kind to your other participants within the community and bear in mind that English may not be everybody's first language.
+* Moderators reserve the right to remove messages which may be deemed to be antagonistic, lacking context, a plug for a product, or off-topic. 
 
 ### Roadmap
 

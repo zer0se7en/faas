@@ -31,7 +31,7 @@ func TestRead_UseExternalProvider_Defaults(t *testing.T) {
 	defaults := NewEnvBucket()
 	readConfig := ReadConfig{}
 
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if config.UseExternalProvider() != false {
 		t.Log("Default for UseExternalProvider should be false")
@@ -44,9 +44,77 @@ func TestRead_UseExternalProvider_Defaults(t *testing.T) {
 	}
 
 	if len(config.DirectFunctionsSuffix) > 0 {
-		t.Log("Default for DirectFunctionsSuffix should be empty as a default")
+		t.Log("Default for DirectFunctionsSuffix should be empty")
 		t.Fail()
 	}
+
+	if len(config.Namespace) > 0 {
+		t.Log("Default for Namespace should be empty")
+		t.Fail()
+	}
+}
+
+func TestRead_NamespaceOverride(t *testing.T) {
+
+	defaults := NewEnvBucket()
+	readConfig := ReadConfig{}
+
+	defaults.Setenv("function_namespace", "fn")
+	wantSuffix := "fn"
+
+	config, _ := readConfig.Read(defaults)
+
+	if config.Namespace != wantSuffix {
+		t.Logf("Namespace want: %s, got: %s", wantSuffix, config.Namespace)
+		t.Fail()
+	}
+}
+
+func TestRead_NamespaceOverrideAgressWithFunctionSuffix_Valid(t *testing.T) {
+
+	defaults := NewEnvBucket()
+	readConfig := ReadConfig{}
+
+	defaults.Setenv("direct_functions", "true")
+	wantSuffix := "openfaas-fn.cluster.local.svc."
+
+	defaults.Setenv("direct_functions_suffix", wantSuffix)
+	defaults.Setenv("function_namespace", "openfaas-fn")
+
+	_, err := readConfig.Read(defaults)
+
+	if err != nil {
+		t.Logf("Error found: %s", err)
+		t.Fail()
+	}
+}
+
+func TestRead_NamespaceOverrideAgressWithFunctionSuffix_Invalid(t *testing.T) {
+
+	defaults := NewEnvBucket()
+	readConfig := ReadConfig{}
+
+	defaults.Setenv("direct_functions", "true")
+	wantSuffix := "openfaas-fn.cluster.local.svc."
+
+	defaults.Setenv("direct_functions_suffix", wantSuffix)
+	defaults.Setenv("function_namespace", "fn")
+
+	_, err := readConfig.Read(defaults)
+
+	if err == nil {
+		t.Logf("Expected an error because function_namespace should be a sub-string of direct_functions_suffix")
+		t.Fail()
+		return
+	}
+
+	want := "function_namespace must be a sub-string of direct_functions_suffix"
+
+	if want != err.Error() {
+		t.Logf("Error want: %s, got: %s", want, err.Error())
+		t.Fail()
+	}
+
 }
 
 func TestRead_DirectFunctionsOverride(t *testing.T) {
@@ -56,7 +124,7 @@ func TestRead_DirectFunctionsOverride(t *testing.T) {
 	wantSuffix := "openfaas-fn.cluster.local.svc."
 	defaults.Setenv("direct_functions_suffix", wantSuffix)
 
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if config.DirectFunctions != true {
 		t.Logf("DirectFunctions should be true, got: %v", config.DirectFunctions)
@@ -73,7 +141,7 @@ func TestRead_ScaleZeroDefaultAndOverride(t *testing.T) {
 	defaults := NewEnvBucket()
 	readConfig := ReadConfig{}
 	// defaults.Setenv("scale_from_zero", "true")
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	want := false
 	if config.ScaleFromZero != want {
@@ -82,7 +150,7 @@ func TestRead_ScaleZeroDefaultAndOverride(t *testing.T) {
 	}
 
 	defaults.Setenv("scale_from_zero", "true")
-	config = readConfig.Read(defaults)
+	config, _ = readConfig.Read(defaults)
 	want = true
 
 	if config.ScaleFromZero != want {
@@ -96,7 +164,7 @@ func TestRead_EmptyTimeoutConfig(t *testing.T) {
 	defaults := NewEnvBucket()
 	readConfig := ReadConfig{}
 
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if (config.ReadTimeout) != time.Duration(8)*time.Second {
 		t.Log("ReadTimeout incorrect")
@@ -114,7 +182,7 @@ func TestRead_ReadAndWriteTimeoutConfig(t *testing.T) {
 	defaults.Setenv("write_timeout", "60")
 
 	readConfig := ReadConfig{}
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if (config.ReadTimeout) != time.Duration(10)*time.Second {
 		t.Logf("ReadTimeout incorrect, got: %d\n", config.ReadTimeout)
@@ -132,7 +200,7 @@ func TestRead_ReadAndWriteTimeoutDurationConfig(t *testing.T) {
 	defaults.Setenv("write_timeout", "1m30s")
 
 	readConfig := ReadConfig{}
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if (config.ReadTimeout) != time.Duration(20)*time.Second {
 		t.Logf("ReadTimeout incorrect, got: %d\n", config.ReadTimeout)
@@ -148,7 +216,7 @@ func TestRead_UseNATSDefaultsToOff(t *testing.T) {
 	defaults := NewEnvBucket()
 	readConfig := ReadConfig{}
 
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if config.UseNATS() == true {
 		t.Log("NATS is supposed to be off by default")
@@ -162,10 +230,52 @@ func TestRead_UseNATS(t *testing.T) {
 	defaults.Setenv("faas_nats_port", "6222")
 	readConfig := ReadConfig{}
 
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if config.UseNATS() == false {
 		t.Log("NATS was requested in config, but not enabled.")
+		t.Fail()
+	}
+
+	wantNATSAddress := "nats"
+	if *config.NATSAddress != wantNATSAddress {
+		t.Logf("faas_nats_address: want %s, got %s", wantNATSAddress, *config.NATSAddress)
+		t.Fail()
+	}
+
+	wantNATSPort := 6222
+	if *config.NATSPort != wantNATSPort {
+		t.Logf("faas_nats_port: want %d, got %d", wantNATSPort, *config.NATSPort)
+		t.Fail()
+	}
+
+	wantNATSClusterName := "faas-cluster"
+	if *config.NATSClusterName != wantNATSClusterName {
+		t.Logf("faas_nats_cluster_name: want %s, got %s", wantNATSClusterName, *config.NATSClusterName)
+		t.Fail()
+	}
+
+	wantNATSChannel := "faas-request"
+	if *config.NATSChannel != wantNATSChannel {
+		t.Logf("faas_nats_channel: want %s, got %s", wantNATSChannel, *config.NATSChannel)
+		t.Fail()
+	}
+
+	defaults.Setenv("faas_nats_cluster_name", "example-nats-cluster")
+	config, _ = readConfig.Read(defaults)
+
+	wantNATSClusterName = "example-nats-cluster"
+	if *config.NATSClusterName != wantNATSClusterName {
+		t.Logf("faas_nats_cluster_name: want %s, got %s", wantNATSClusterName, *config.NATSClusterName)
+		t.Fail()
+	}
+
+	defaults.Setenv("faas_nats_channel", "foo")
+	config, _ = readConfig.Read(defaults)
+
+	wantNATSChannel = "foo"
+	if *config.NATSChannel != wantNATSChannel {
+		t.Logf("faas_nats_channel: want %s, got %s", wantNATSChannel, *config.NATSChannel)
 		t.Fail()
 	}
 }
@@ -175,14 +285,20 @@ func TestRead_UseNATSBadPort(t *testing.T) {
 	defaults := NewEnvBucket()
 	defaults.Setenv("faas_nats_address", "nats")
 	defaults.Setenv("faas_nats_port", "6fff")
+	defaults.Setenv("faas_nats_cluster_name", "example-nats-cluster")
 	readConfig := ReadConfig{}
 
-	config := readConfig.Read(defaults)
+	_, err := readConfig.Read(defaults)
 
-	if config.UseNATS() == true {
-		t.Log("NATS had bad config, should not be enabled.")
-		t.Fail()
+	if err != nil {
+		want := "faas_nats_port invalid number: 6fff"
+
+		if want != err.Error() {
+			t.Errorf("want error: %q, got: %q", want, err.Error())
+			t.Fail()
+		}
 	}
+
 }
 
 func TestRead_PrometheusNonDefaults(t *testing.T) {
@@ -191,7 +307,7 @@ func TestRead_PrometheusNonDefaults(t *testing.T) {
 	defaults.Setenv("faas_prometheus_port", "9999")
 	readConfig := ReadConfig{}
 
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if config.PrometheusHost != "prom1" {
 		t.Logf("config.PrometheusHost, want: %s, got: %s\n", "prom1", config.PrometheusHost)
@@ -209,7 +325,7 @@ func TestRead_PrometheusDefaults(t *testing.T) {
 
 	readConfig := ReadConfig{}
 
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if config.PrometheusHost != "prometheus" {
 		t.Logf("config.PrometheusHost, want: %s, got: %s\n", "prometheus", config.PrometheusHost)
@@ -227,7 +343,7 @@ func TestRead_BasicAuthDefaults(t *testing.T) {
 
 	readConfig := ReadConfig{}
 
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if config.UseBasicAuth != false {
 		t.Logf("config.UseBasicAuth, want: %t, got: %t\n", false, config.UseBasicAuth)
@@ -248,7 +364,7 @@ func TestRead_BasicAuth_SetTrue(t *testing.T) {
 
 	readConfig := ReadConfig{}
 
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if config.UseBasicAuth != true {
 		t.Logf("config.UseBasicAuth, want: %t, got: %t\n", true, config.UseBasicAuth)
@@ -267,7 +383,7 @@ func TestRead_MaxIdleConnsDefaults(t *testing.T) {
 
 	readConfig := ReadConfig{}
 
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if config.MaxIdleConns != 1024 {
 		t.Logf("config.MaxIdleConns, want: %d, got: %d\n", 1024, config.MaxIdleConns)
@@ -287,7 +403,7 @@ func TestRead_MaxIdleConns_Override(t *testing.T) {
 	defaults.Setenv("max_idle_conns", fmt.Sprintf("%d", 100))
 	defaults.Setenv("max_idle_conns_per_host", fmt.Sprintf("%d", 2))
 
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if config.MaxIdleConns != 100 {
 		t.Logf("config.MaxIdleConns, want: %d, got: %d\n", 100, config.MaxIdleConns)
@@ -307,7 +423,7 @@ func TestRead_AuthProxy_Defaults(t *testing.T) {
 	wantURL := ""
 	wantBody := false
 
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if config.AuthProxyPassBody != wantBody {
 		t.Logf("config.AuthProxyPassBody, want: %t, got: %t\n", wantBody, config.AuthProxyPassBody)
@@ -329,7 +445,7 @@ func TestRead_AuthProxy_DefaultsOverrides(t *testing.T) {
 	defaults.Setenv("auth_proxy_url", wantURL)
 	defaults.Setenv("auth_proxy_pass_body", fmt.Sprintf("%t", wantBody))
 
-	config := readConfig.Read(defaults)
+	config, _ := readConfig.Read(defaults)
 
 	if config.AuthProxyPassBody != wantBody {
 		t.Logf("config.AuthProxyPassBody, want: %t, got: %t\n", wantBody, config.AuthProxyPassBody)
@@ -347,7 +463,7 @@ func TestRead_LogsProviderURL(t *testing.T) {
 
 	t.Run("default value is nil when functions_provider_url is empty", func(t *testing.T) {
 		readConfig := ReadConfig{}
-		config := readConfig.Read(defaults)
+		config, _ := readConfig.Read(defaults)
 		if config.LogsProviderURL != nil {
 			t.Fatalf("config.LogsProviderURL, want: %s, got: %s\n", "", config.LogsProviderURL)
 		}
@@ -358,7 +474,7 @@ func TestRead_LogsProviderURL(t *testing.T) {
 		defaults.Setenv("functions_provider_url", expected)
 
 		readConfig := ReadConfig{}
-		config := readConfig.Read(defaults)
+		config, _ := readConfig.Read(defaults)
 		if config.LogsProviderURL.String() != expected {
 			t.Fatalf("config.LogsProviderURL, want: %s, got: %s\n", expected, config.LogsProviderURL)
 		}
@@ -369,7 +485,7 @@ func TestRead_LogsProviderURL(t *testing.T) {
 		defaults.Setenv("logs_provider_url", expected)
 
 		readConfig := ReadConfig{}
-		config := readConfig.Read(defaults)
+		config, _ := readConfig.Read(defaults)
 		if config.LogsProviderURL.String() != expected {
 			t.Fatalf("config.LogsProviderURL, want: %s, got: %s\n", expected, config.LogsProviderURL)
 		}

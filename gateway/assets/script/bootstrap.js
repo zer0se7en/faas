@@ -17,11 +17,14 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
         $scope.invocationStatus = "";
         $scope.invocationStart = new Date().getTime();
         $scope.roundTripDuration = "";
+        $scope.selectedNamespace = "";
+        $scope.allNamespaces = [""];
         $scope.invocation = {
             contentType: "text"
         };
 
         $scope.baseUrl = $location.absUrl().replace(/\ui\/$/, '');
+
         try {
             $scope.canCopyToClipboard = document.queryCommandSupported('copy');
         } catch (err) {
@@ -40,6 +43,8 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
             showPostInvokedToast(msg);
         }
 
+
+
         $scope.toggleSideNav = function() {
             $mdSidenav('left').toggle();
         };
@@ -52,15 +57,30 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
             envVars: {},
             labels: {},
             annotations: {},
-            secrets: []
+            secrets: [],
+            namespace: "",
         };
 
         $scope.invocation.request = "";
+
         var fetchFunctionsDelay = 3500;
         var queryFunctionDelay = 2500;
-        
+
+
+
+
+        $http.get("../system/namespaces")
+            .then(function(response) {
+                $scope.allNamespaces = response.data;
+                if ($scope.selectedNamespace === "" && response.data && response.data[0] && response.data[0] !== "") {
+                    $scope.selectedNamespace = response.data[0]
+                    refreshData($scope.selectedNamespace)
+                }
+            })
+
+
         var fetchFunctionsInterval = $interval(function() {
-            refreshData();
+            refreshData($scope.selectedNamespace);
         }, fetchFunctionsDelay);
 
         var queryFunctionInterval = $interval(function() {
@@ -69,10 +89,18 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
             }
         }, queryFunctionDelay);
 
+        $scope.setNamespace = function(namespace) {
+            $scope.selectedNamespace = namespace;
+            $scope.selectedFunction = undefined;
+            $scope.functions = [];
+            refreshData($scope.selectedNamespace)
+        }
+
         var refreshFunction = function(functionInstance) {
-            $http.get("../system/function/" + functionInstance.name)
+            const url = "/system/function/" + functionInstance.name;
+            $http.get(buildNamespaceAwareURL(url, $scope.selectedNamespace))
             .then(function(response) {
-                functionInstance.ready = (response.data && response.data.availableReplicas && response.data.availableReplicas > 0);
+               $scope.selectedFunction.ready = (response.data && response.data.availableReplicas && response.data.availableReplicas > 0);
             })
             .catch(function(err) {
                 console.error(err);
@@ -94,14 +122,15 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                 requestContentType = "binary/octet-stream";
             }
 
+            var fnNamespace = ($scope.selectedNamespace && $scope.selectedNamespace.length > 0) ? "." + $scope.selectedNamespace : "";
             var options = {
-                url: "../function/" + $scope.selectedFunction.name,
+                url: "../function/" + $scope.selectedFunction.name + fnNamespace,
                 data: $scope.invocation.request,
                 method: "POST",
                 headers: { "Content-Type": requestContentType },
                 responseType: $scope.invocation.contentType == "binary" ? "arraybuffer" : $scope.invocation.contentType
             };
-            
+
             $scope.invocationInProgress = true;
             $scope.invocationResponse = "";
             $scope.invocationStatus = null;
@@ -111,10 +140,10 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
 
             var tryDownload = function(data, filename) {
                 var caught;
-            
+
                 try {
                     var blob = new Blob([data], { type: "binary/octet-stream" });
-            
+
                     if (window.navigator.msSaveBlob) { // // IE hack; see http://msdn.microsoft.com/en-us/library/ie/hh779016.aspx
                         window.navigator.msSaveOrOpenBlob(blob, filename);
                     }
@@ -126,7 +155,7 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                         linkElement.click();
                         document.body.removeChild(linkElement);
                     }
-            
+
                 } catch (ex) {
                     caught = ex;
                 }
@@ -150,7 +179,7 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
 
                         var caught = tryDownload(data, filename);
                         if(caught) {
-                            console.log(caught);                         
+                            console.log(caught);
                             $scope.invocationResponse = caught
                         } else {
                             $scope.invocationResponse = data.byteLength + " byte(s) received";
@@ -182,42 +211,17 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                 });
         };
 
-        var refreshData = function () {
-            var previous = $scope.functions;
+        var refreshData = function (selectedNamespace) {
+            $http.get(buildNamespaceAwareURL("/system/functions", selectedNamespace)).then(function (response) {
+                const curNamespace = ($scope.functions.length > 0 && $scope.functions[0].namespace && $scope.functions[0].namespace) ? $scope.functions[0].namespace : "";
+                const  newNamespace = (response.data && response.data[0] && response.data[0].namespace) ? response.data[0].namespace : "";
 
-            var cl = function (previousItems) {
-                $http.get("../system/functions").then(function (response) {
-                    if (response && response.data) {
-                        if (previousItems.length != response.data.length) {
-                            $scope.functions = response.data;
-
-                            // update the selected function object because the newly fetched object from the API becomes a different object
-                            var filteredSelectedFunction = $filter('filter')($scope.functions, { name: $scope.selectedFunction.name }, true);
-                            if (filteredSelectedFunction && filteredSelectedFunction.length > 0) {
-                                $scope.selectedFunction = filteredSelectedFunction[0];
-                            } else {
-                                $scope.selectedFunction = undefined;
-                            }
-                        } else {
-                            for (var i = 0; i < $scope.functions.length; i++) {
-                                for (var j = 0; j < response.data.length; j++) {
-                                    if ($scope.functions[i].name == response.data[j].name) {
-                                        $scope.functions[i].image = response.data[j].image;
-                                        $scope.functions[i].replicas = response.data[j].replicas;
-                                        $scope.functions[i].invocationCount = response.data[j].invocationCount;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            };
-            cl(previous);
-        }
-
-        var fetch = function() {
-            $http.get("../system/functions").then(function(response) {
-                $scope.functions = response.data;
+                if (response && response.data && (curNamespace !== newNamespace || $scope.functions.length != response.data.length)) {
+                  $scope.functions = response.data;
+                  if (!$scope.functions.indexOf($scope.selectedFunction )) {
+                      $scope.selectedFunction = undefined;
+                  }
+                }
             });
         };
 
@@ -244,13 +248,20 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                 targetEvent: $event,
                 templateUrl: "templates/newfunction.html",
                 locals: {
-                    item: $scope.functionTemplate
+                    item: $scope.functionTemplate,
+                    selectedNamespace: $scope.selectedNamespace
                 },
-                controller: DialogController
+                controller: DialogController,
             });
         };
 
-        var DialogController = function($scope, $mdDialog, item) {
+        var DialogController = function($scope, $mdDialog, item, selectedNamespace) {
+            var fetchNamespaces = function () {
+                $http.get("../system/namespaces")
+                    .then(function(response) {
+                        $scope.allNamespaces = response.data;
+                    })
+            }
             $scope.selectedTabIdx = newFuncTabIdx;
             $scope.item = {};
             $scope.selectedFunc = null;
@@ -265,7 +276,10 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
 
             $scope.annotationFieldsVisible = false;
             $scope.annotationInputs = [{key: "", value: ""}];
-            
+            $scope.namespaceSelect = selectedNamespace;
+            fetchNamespaces();
+
+
             $scope.closeDialog = function() {
                 $mdDialog.hide();
             };
@@ -279,10 +293,12 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                 $scope.labelsToLabelInputs(func.labels);
                 $scope.annotationsToAnnotationInputs(func.annotations);
                 $scope.secretsToSecretInputs(func.secrets);
+                $scope.item.namespace = $scope.namespaceSelected();
+
 
                 $scope.selectedFunc = func;
             }
-            
+
             $scope.onTabSelect = function(idx) {
                 newFuncTabIdx = idx;
             }
@@ -300,6 +316,7 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                 $scope.item.secrets = $scope.secretInputsToSecrets();
                 $scope.item.labels = $scope.labelInputsToLabels();
                 $scope.item.annotations = $scope.annotationInputsToAnnotations();
+                $scope.item.namespace = $scope.namespaceSelected();
 
                 var options = {
                     url: "../system/functions",
@@ -319,6 +336,7 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                         item.labels = {};
                         item.annotations = {};
                         item.secrets = [];
+                        item.namespace = "";
 
                         $scope.validationError = "";
                         $scope.closeDialog();
@@ -329,6 +347,10 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                         $scope.validationError = error1.data;
                     });
             };
+
+            $scope.fnNamespaceSelected = function(inputNamespace) {
+                $scope.namespaceSelect = inputNamespace;
+            }
 
             $scope.onEnvInputExpand = function() {
                 $scope.envFieldsVisible = !$scope.envFieldsVisible;
@@ -402,7 +424,7 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                         result[self.envVarInputs[i].key] = self.envVarInputs[i].value;
                     }
                 }
-                
+
                 return result;
             }
 
@@ -431,7 +453,7 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                         result.push(self.secretInputs[i].name);
                     }
                 }
-                
+
                 return result;
             }
 
@@ -451,7 +473,7 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
 
                 $scope.secretInputs = result;
             }
-    
+
             $scope.labelInputsToLabels = function() {
                 var self = this;
                 var result = {};
@@ -460,7 +482,7 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                         result[self.labelInputs[i].key] = self.labelInputs[i].value;
                     }
                 }
-                
+
                 return result;
             }
 
@@ -477,10 +499,10 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                     result.push({key: "", value: ""});
                     $scope.labelFieldsVisible = false;
                 }
-                
+
                 $scope.labelInputs = result;
             }
-    
+
             $scope.annotationInputsToAnnotations = function() {
                 var self = this;
                 var result = {};
@@ -489,8 +511,13 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                         result[self.annotationInputs[i].key] = self.annotationInputs[i].value;
                     }
                 }
-                
+
                 return result;
+            }
+
+            $scope.namespaceSelected = function() {
+                var self = this;
+                return self.namespaceSelect;
             }
 
             $scope.annotationsToAnnotationInputs = function(annotations) {
@@ -506,7 +533,7 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                     result.push({key: "", value: ""});
                     $scope.annotationFieldsVisible = false;
                 }
-                
+
                 $scope.annotationInputs = result;
             }
         };
@@ -527,7 +554,8 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
             $mdDialog.show(confirm)
                 .then(function() {
                     var options = {
-                        url: "../system/functions",
+
+                        url: buildNamespaceAwareURL("/system/functions", $scope.selectedNamespace),
                         data: {
                             functionName: $scope.selectedFunction.name
                         },
@@ -547,8 +575,6 @@ app.controller("home", ['$scope', '$log', '$http', '$location', '$interval', '$f
                     }
                 });
         };
-
-        fetch();
     }
 ]);
 
@@ -557,4 +583,13 @@ function uuidv4() {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, function(c) {
         return (c ^ cryptoInstance.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     })
-}  
+}
+
+function buildNamespaceAwareURL(path, namespace) {
+    let newUrl = path.startsWith("/")? ".." + path: "../" + path;
+
+    if (namespace && namespace.length > 0){
+        newUrl +=  "?namespace=" +  namespace
+    }
+    return newUrl
+}

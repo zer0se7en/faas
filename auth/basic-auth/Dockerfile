@@ -1,4 +1,6 @@
-FROM golang:1.11-alpine3.10 as build
+FROM golang:1.12-alpine3.11 as build
+
+ENV GO111MODULE=off
 ENV CGO_ENABLED=0
 
 RUN apk add --no-cache curl ca-certificates
@@ -16,7 +18,7 @@ RUN license-check -path ./ --verbose=false "OpenFaaS Authors" "OpenFaaS Author(s
     go build --ldflags "-s -w" -a -installsuffix cgo -o handler . && \
     go test $(go list ./... | grep -v /vendor/) -cover
 
-FROM alpine:3.10 as ship
+FROM alpine:3.11 as ship
 # Add non-root user
 RUN addgroup -S app && adduser -S -g app app \
     && mkdir -p /home/app \

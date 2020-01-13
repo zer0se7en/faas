@@ -1,25 +1,25 @@
 maintainers:
  - BurtonR
  - LucasRoesler
- - affix
  - alexellis
  - ewilde
- - ivanayov
  - johnmccabe
  - jonatasbaldin
  - kenfdev
  - martindekov
  - matipan
  - rgee0
- - s8sg
  - stefanprodan
  - viveksyngh
- - zeerorg
+ - Waterdrips
+ - utsavanand2
 
 features:
  - dco_check
  - comments
  - pr_description_required
+# - hacktoberfest
+ - release_notes
 
 custom_messages:
   - name: slack

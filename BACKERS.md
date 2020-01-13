@@ -1,6 +1,8 @@
-# Project backers
+# OpenFaaS Project Backers
 
 OpenFaaS is licensed as MIT and completely Open Source and free to use. However the amount of effort needed to maintain and develop new features is not sustainable without proper financial backing.
+
+Companies using OpenFaaS with their products or projects are encouraged to join at Gold or Platinum tier. Commercial support is also available.
 
 ## `#FaaSFriday`
 
@@ -24,9 +26,13 @@ Become an Insider today: [GitHub Sponsors](https://www.openfaas.com/support/)
 
 Become a sponsor of openfaas.com and connect your brand to one of the fastest-growing developer communities with over 18k GitHub stars and dozens of well-known end-users. Use one of the funding options above, or email: [sales@openfaas.com](mailto:sales@openfaas.com) to ask about how to sponsor by invoice through OpenFaaS Ltd.
 
+* Diamond
+
+    As per Platinum, but limited to only one company. If you have a dependency on OpenFaaS in production or are building a product that depends on the project's longevity and upkeep, then help fund the costs to maintain the project.
+
 * Platinum
 
-    normal-sized logo openfaas.com, Tweet from @openfaas, and one-off feature in Insiders Updates - (6 months minimum via invoice)
+    Normal-sized logo openfaas.com, Tweet from @openfaas, and one-off feature in Insiders Updates - (6 months minimum via invoice)
 
 * Gold
 
@@ -36,70 +42,57 @@ Become a sponsor of openfaas.com and connect your brand to one of the fastest-gr
 
     Logo in BACKERS.md (this file) - (monthly rolling via GitHub Sponsors)
 
+### Sponsor plus packages
+
+Get support, backlog, issue & PR prioritization, and professional services with your sponsorship from OpenFaaS Ltd, the host and curator of OpenFaaS.
+
+* Platinum sponsor plus
+
+    Platinum sponsorship plus up to 20% of a senior engineer's time per week for OpenFaaS support and professional services
+
+* Gold sponsor plus
+
+    Gold sponsorship plus up to 4 hours of a senior engineer's time per month for OpenFaaS support and professional services
+
+Email [sales@openfaas.com](mailto:sales@openfaas.com) for a quote.
+
 #### Platinum Sponsors (homepage sponsor)
 
-<a href="https://rancher.com"><img alt="Rancher" src="https://www.openfaas.com/images/sponsors/rancher-logo-stacked-color.svg" width="125px" /></a>
+<a href="https://digitalocean.com"><img alt="DigitalOcean" src="https://www.openfaas.com/images/sponsors/digitalocean.svg" width="110px" /></a>
+
+<a href="https://rancher.com"><img alt="Rancher" src="https://www.openfaas.com/images/sponsors/rancher-logo-stacked-color.svg" width="110px" /></a>
+
+<a href="https://www.thectoadvisor.com"><img alt="CTO Advisor" src="https://www.openfaas.com/images/sponsors/cto-advisor.png" width="110px" /></a>
+
+<a href="https://dx.no"><img alt="DX" src="https://www.openfaas.com/images/users-logos/dx.png" width="110px" /></a>
 
 #### Gold Sponsors (homepage sponsor)
 
-<a href="https://civo.com"><img alt="Civo" src="https://www.openfaas.com/images/sponsors/civo.svg" width="125px" /></a>
+<a href="https://civo.com"><img alt="Civo" src="https://www.openfaas.com/images/sponsors/civo.svg" width="100px" /></a>
 
 #### Bronze Sponsors
 
-<a href="https://asyncy.com"><img alt="ASYNCY" src="https://www.openfaas.com/images/sponsors/asyncy.png" width="100px" /></a>
+<a href="https://asyncy.com"><img alt="ASYNCY" src="https://www.openfaas.com/images/sponsors/asyncy.png" width="90px" /></a>
 
-<a href="https://garden.io"><img alt="Garden.io" src="https://www.openfaas.com/images/sponsors/garden.png" width="100px" /></a>
+<a href="https://garden.io"><img alt="Garden.io" src="https://www.openfaas.com/images/sponsors/garden.png" width="90px" /></a>
 
-<a href="https://www.contiamo.com"><img alt="Contiamo" src="https://docs.openfaas.com/images/logos/contiamo.svg" width="100px" /></a>
+<a href="https://www.contiamo.com"><img alt="Contiamo" src="https://docs.openfaas.com/images/logos/contiamo.svg" width="90px" /></a>
 
-<a href="https://www.form3.tech"><img alt="Form3 Tech" src="https://docs.openfaas.com/images/logos/form3.svg" width="100px" /></a>
+<a href="https://www.form3.tech"><img alt="Form3 Tech" src="https://docs.openfaas.com/images/logos/form3.svg" width="90px" /></a>
+
+<a href="https://dragonchain.com"><img alt="Dragonchain" src="https://www.openfaas.com/images/users-logos/dragonchain.svg" width="90px" /></a>
 
 * [Brandon Lamb](https://github.com/brandonlamb)
 
-## Individual backers (Patreon / GitHub)
+<a href="https://ratehub.ca"><img alt="ratehub.ca" src="https://www.ratehub.ca/images/logo-small-right.png" width="90px" /></a>
 
-Whatever tier, whether 5 USD or 500 USD, if you're a backer on Patreon, or a GitHub Sponsor, then please send a PR to have your name listed below:
+## Individual backers
 
-* Andrew Cornies
-* Benjamin Neil
-* Chad Taylor
-* Christian Sakshaug
-* Contiamo
-* David Salek
-* Garden Germany GmbH
-* Johnny MKHAEL 
-* Julio
-* Lewis Bowman
-* Mark Jeromin
-* Matias Pan
-* Martin Dekov
-* Murugappan Sevugan Chetty
-* Owen Dall Sotomayor
-* Patricio Diaz
-* Pav Jimanov
-* Rafael Barbosa
-* Richard Petersen-Hall
-* Ruan Bekker
-* Scott Rosenberg
-* Sergey Radov
-* Sivaramakrishnan Malikkal
-* Steve Peak
-* Weston Steimel
-* Younes Amardaya
+As an individual your support can go a long way, please join on GitHub Sponsors.
 
-See the complete list of *Public* sponsors on GitHub and:
+* View or join our [GitHub sponsors](https://insiders.openfaas.io/)
 
-* [Sponsor today](https://github.com/users/alexellis/sponsorship)
+Patreon takes a processing fees and an additional pay-out fee, so GitHub sponsors is recommended for maximum impact.
 
-### Hall of fame
+* View or join the [Patreon backers](https://www.patreon.com/alexellis)
 
-The hall of fame shows contributors who made a sustained positive impact on the project and community, but are no longer able to remain active in Open Source or OpenFaaS.
-
-* John Mccabe
-* Austin Frey
-* Robbie Page
-* Jock Reed
-* Eric Stoekl
-* Ken Fukuyama
-* Richard Gee
-* Ivana Yocheva

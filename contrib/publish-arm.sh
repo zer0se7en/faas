@@ -1,6 +1,9 @@
 #!/bin/bash
 
-declare -a repos=("openfaas-incubator/openfaas-operator" "openfaas-incubator/faas-idler" "openfaas/faas" "openfaas/faas-swarm" "openfaas/nats-queue-worker" "openfaas/faas-netes" "openfaas/faas-cli")
+# "openfaas/nats-queue-worker"
+# ^ Already multi-arch
+
+declare -a repos=("openfaas-incubator/openfaas-operator" "openfaas-incubator/faas-idler" "openfaas/faas" "openfaas/faas-swarm" "openfaas/faas-netes" "openfaas/faas-cli")
 HERE=`pwd`
 ARCH=$(uname -m)
 
@@ -48,13 +51,13 @@ do
 
    for IMAGE in "${images[@]}"
    do
-      TAG_PRESENT=$(curl -s "https://hub.docker.com/v2/repositories/${IMAGE}/tags/${TAG}-${ARM_VERSION}/" | grep -Po '"detail": *"[^"]*"' | grep -o 'Not found')
-      if [ "$TAG_PRESENT" = "Not found" ]; then
+      TAG_PRESENT=$(curl -s "https://hub.docker.com/v2/repositories/${IMAGE}/tags/${TAG}-${ARM_VERSION}/" | grep -Po '"message": *"[^"]*"' | grep -io 'not found')
+      if [ "$TAG_PRESENT" = "not found" ]; then
       break
       fi
    done
    
-   if [ "$TAG_PRESENT" = "Not found" ]; then
+   if [ "$TAG_PRESENT" = "not found" ]; then
        make ci-${ARM_VERSION}-build ci-${ARM_VERSION}-push
    else
      for IMAGE in "${images[@]}"

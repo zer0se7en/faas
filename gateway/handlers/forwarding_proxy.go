@@ -65,12 +65,9 @@ func MakeForwardingProxyHandler(proxy *types.HTTPClientReverseProxy,
 			log.Printf("error with upstream request to: %s, %s\n", requestURL, err.Error())
 		}
 
-		// defer func() {
 		for _, notifier := range notifiers {
 			notifier.Notify(r.Method, requestURL, originalURL, statusCode, seconds)
 		}
-		// }()
-
 	}
 }
 
@@ -89,6 +86,7 @@ func buildUpstreamRequest(r *http.Request, baseURL string, requestURL string) *h
 	if len(r.Host) > 0 && upstreamReq.Header.Get("X-Forwarded-Host") == "" {
 		upstreamReq.Header["X-Forwarded-Host"] = []string{r.Host}
 	}
+
 	if upstreamReq.Header.Get("X-Forwarded-For") == "" {
 		upstreamReq.Header["X-Forwarded-For"] = []string{r.RemoteAddr}
 	}
@@ -181,7 +179,8 @@ func (s SingleHostBaseURLResolver) Resolve(r *http.Request) string {
 
 // FunctionAsHostBaseURLResolver resolves URLs using a function from the URL as a host
 type FunctionAsHostBaseURLResolver struct {
-	FunctionSuffix string
+	FunctionSuffix    string
+	FunctionNamespace string
 }
 
 // Resolve the base URL for a request
@@ -190,8 +189,13 @@ func (f FunctionAsHostBaseURLResolver) Resolve(r *http.Request) string {
 
 	const watchdogPort = 8080
 	var suffix string
+
 	if len(f.FunctionSuffix) > 0 {
-		suffix = "." + f.FunctionSuffix
+		if index := strings.LastIndex(svcName, "."); index > -1 && len(svcName) > index+1 {
+			suffix = strings.Replace(f.FunctionSuffix, f.FunctionNamespace, "", -1)
+		} else {
+			suffix = "." + f.FunctionSuffix
+		}
 	}
 
 	return fmt.Sprintf("http://%s%s:%d", svcName, suffix, watchdogPort)

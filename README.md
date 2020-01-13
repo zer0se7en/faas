@@ -1,12 +1,13 @@
-## OpenFaaS - Serverless Functions Made Simple
+## OpenFaaS &reg; - Serverless Functions Made Simple
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/openfaas/faas)](https://goreportcard.com/report/github.com/openfaas/faas) [![Build
-Status](https://travis-ci.org/openfaas/faas.svg?branch=master)](https://travis-ci.org/openfaas/faas) [![GoDoc](https://godoc.org/github.com/openfaas/faas?status.svg)](https://godoc.org/github.com/openfaas/faas) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+Status](https://travis-ci.com/openfaas/faas.svg?branch=master)](https://travis-ci.com/openfaas/faas) [![GoDoc](https://godoc.org/github.com/openfaas/faas?status.svg)](https://godoc.org/github.com/openfaas/faas) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![OpenFaaS](https://img.shields.io/badge/openfaas-serverless-blue.svg)](https://www.openfaas.com)
+[![Derek App](https://alexellis.o6s.io/badge?owner=openfaas&repo=faas)](https://github.com/alexellis/derek/)
 
 ![OpenFaaS Logo](https://blog.alexellis.io/content/images/2017/08/faas_side.png)
 
-OpenFaaS&reg; (Functions as a Service) is a framework for building Serverless functions with Docker & Kubernetes, which has first-class support for metrics. Any code can be packaged enabling you to consume a range of web events without repetitive boiler-plate coding.
+OpenFaaS&reg; makes it easy for developers to deploy event-driven functions and microservices to Kubernetes without repetitive, boiler-plate coding. Package your code or an existing binary in a Docker image to get a highly scalable endpoint with auto-scaling and metrics.
 
 [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/fold_left.svg?style=social&label=Follow%20%40openfaas)](https://twitter.com/openfaas)
 
@@ -31,7 +32,7 @@ OpenFaaS&reg; (Functions as a Service) is a framework for building Serverless fu
 
 ## Overview of OpenFaaS (Serverless Functions Made Simple)
 
-![Conceptual architecture](https://pbs.twimg.com/media/DFrkF4NXoAAJwN2.jpg)
+![Conceptual architecture](/docs/of-layer-overview.png)
 
 ### Press / Branding / Website Sponsorship
 
@@ -61,7 +62,7 @@ OpenFaaS&reg; is an independent project founded by [Alex Ellis](https://www.alex
 
 View a selection of end-user companies who have given permission to have their logo listed at [openfaas.com](https://www.openfaas.com/).
 
-If you're using OpenFaaS please let us know [on this thead](https://github.com/openfaas/faas/issues/776). In addition, you are welcome to request to have your logo listed on the homepage. Thank you for your support.
+If you're using OpenFaaS please let us know [on this thread](https://github.com/openfaas/faas/issues/776). In addition, you are welcome to request to have your logo listed on the homepage. Thank you for your support.
 
 ### Technical overview
 
@@ -94,22 +95,21 @@ You can generate new functions using the `faas-cli` and built-in templates or us
 
 Official templates exist for many popular languages and are easily extensible with Dockerfiles.
 
-* Node.js (`node10-express`) example:
+* Node.js (`node12`) example:
 
     ```js
-    "use strict"
-
-    module.exports = (event, context) => {
-
-    context
-        .headers({"Content-Type": "text/html"})
-        .status(200)
-        .succeed(`
-        <h1>
-            👋 Hello World 🌍
-        </h1>
-        `)
+   "use strict"
+   
+    module.exports = async (event, context) => {
+        return context
+            .status(200)
+            .headers({"Content-Type": "text/html"})
+            .succeed(`
+            <h1>
+                👋 Hello World 🌍
+            </h1>`);
     }
+ 
     ```
     *handler.js*
 
@@ -135,7 +135,6 @@ Official templates exist for many popular languages and are easily extensible wi
         "github.com/openfaas-incubator/go-function-sdk"
     )
 
-    // Handle a function invocation
     func Handle(req handler.Request) (handler.Response, error) {
         var err error
 
@@ -191,13 +190,15 @@ The deployment guide for Docker Swarm contains a simple one-line command to get 
 
     > You will need a free Docker Hub account to get access. Get one here: [Docker Hub](https://hub.docker.com/)
 
-## Find out more about OpenFaaS
+## Video presentations
 
-### Welcome to Serverless 2.0 @ Goto Chicago 2019
+### OpenFaaS Cloud + Linkerd: A Secure, Multi-Tenant Serverless Platform
 
-Featuring a manifesto for Serverless 2.0 including comparisons and synergies between OpenFaaS, AWS Lambda, Knative, and Kubeless.
+[From KubeCon North America 2019 with Charles Pretzer from Buoyant & Alex Ellis, OpenFaaS Ltd](https://www.youtube.com/watch?v=sD7hCwq3Gw0&feature=emb_title)
 
-* [Watch on YouTube](https://www.youtube.com/watch?v=JvXm-oHi5Mg)
+### The PLONK Stack/Serverless 2.0 for Kubernetes with OpenFaaS
+
+[Getting Beyond FaaS: The PLONK Stack for Kubernetes Developers - Alex Ellis, OpenFaaS Ltd](https://www.youtube.com/watch?v=NckMekZXRt8&feature=emb_title)
 
 ### How LivePerson is Tailoring its Conversational Platform Using OpenFaaS @ KubeCon 2019
 
@@ -207,36 +208,13 @@ Featuring a manifesto for Serverless 2.0 including comparisons and synergies bet
 
 ### Digital Transformation of Vision Banco Paraguay with Serverless Functions @ KubeCon late-2018
 
-Alex Ellis co-presents [at KubeCon](https://kccna18.sched.com/event/GraO/digital-transformation-of-vision-banco-paraguay-with-serverless-functions-alex-ellis-vmware-patricio-diaz-vision-banco-saeca) with Patricio Diaz Senior Analyst, Vision Banco SAECA
-
-* [Watch on YouTube](https://youtu.be/mPjI34qj5vU)
-
-### Serverless Beyond the Hype (goto Copenhagen) late-2018
-
-Overview of the Serverless landscape for Kubernetes, OpenFaaS and OpenFaaS Cloud with live demos and most update information.
-
-* [Watch on YouTube](https://www.youtube.com/watch?time_continue=1&v=yOpYYYRuDQ0)
-
-### The Cube interview @ DevNet Create mid-2018
-
-* [2018 update on the OpenFaaS story](https://www.youtube.com/watch?v=J8UYZ1GXNTQ)
-
-### TechFieldDay presentation (Dockercon EU) late-2017
-
-15 minute overview with demos on Kubernetes and with Alexa - [HD YouTube video](https://www.youtube.com/watch?v=C3agSKv2s_w&list=PLlIapFDp305AiwA17mUNtgi5-u23eHm5j&index=1)
+[From KubeCon North America 2018 with Alex and Patricio Diaz Senior Analyst, Vision Banco SAECA](https://kccna18.sched.com/event/GraO/digital-transformation-of-vision-banco-paraguay-with-serverless-functions-alex-ellis-vmware-patricio-diaz-vision-banco-saeca)
 
 ### Closing Keynote at Dockercon early-2017
 
 Functions as a Service or FaaS was a winner in the Cool Hacks contest for Dockercon 2017.
 
-* [Watch my FaaS keynote at Dockercon 2017](https://blog.docker.com/2017/04/dockercon-2017-mobys-cool-hack-sessions/)
-
-If you'd like to find the functions I used in the demos head over to the [faas-dockercon](https://github.com/alexellis/faas-dockercon/) repository.
-
-**Background story**
-
-* [Introducing OpenFaaS (Functions as a Service)](https://blog.alexellis.io/introducing-functions-as-a-service/) -  August 2017
-* [Functions as a Service (FaaS)](http://blog.alexellis.io/functions-as-a-service/) - January 2017
+* [Watch Alex present "FaaS" during the Dockercon 2017 keynote](https://blog.docker.com/2017/04/dockercon-2017-mobys-cool-hack-sessions/)
 
 ### Community events and blog posts
 
