@@ -48,6 +48,7 @@ It would be great to hear from you especially if you have any of the above and w
 
 | Title                                                               | Show       | Date        |
 |---------------------------------------------------------------------|--------------|----------|
+| [Serverless Functions with Alex Ellis of OpenFaaS: DevOps and Docker Live Show (Ep 68)](https://www.youtube.com/watch?v=5zDvjIkMf9I) | Bret Fisher Docker and DevOps | 16-Jan-2020 | 
 | [OpenFaaS Creator on Open Source’s Community-Funding Model](https://thenewstack.io/openfaas-creator-on-open-sources-community-funding-model/) | The New Stack | 11-Jul-2019 |
 | [Running functions anywhere with OpenFaaS - featuring Alex Ellis](https://changelog.com/podcast/343) | The Changelog | 25-Apr-2019 |
 | [Episode 022 – OpenFaaS with Docker Captain](https://changelog.com/podcast/343) | The 6 Figure Developer Podcast | 15-Jan-2018 |
@@ -61,6 +62,10 @@ It would be great to hear from you especially if you have any of the above and w
 
 | Event name and description                                          | Speaker      | Location | Date        |
 |---------------------------------------------------------------------|--------------|----------|-------------|
+| [Service Mesh and Serverless Chatbots with Linkerd K8s and OpenFaaS](https://kccnceu20.sched.com/event/Zemu/service-mesh-and-serverless-chatbots-with-linkerd-k8s-and-openfaas-sergio-mendez-universidad-san-calors-de-guatemala)| Sergio Méndez | Kubecon EU| 02-Apr-2020 |
+| [Strangling Our Venue Management Monolith at DX with Kubernetes and OpenFaaS](https://kccnceu20.sched.com/event/Zelz/strangling-our-venue-management-monolith-at-dx-with-kubernetes-and-openfaas-christian-sakshaug-dialog-exe-dx-alex-ellis-openfaas-ltd)| Alex Ellis & Christian Sakshaug | Kubecon EU| 02-Apr-2020 |
+| [Sending Billions of Payments Using Hybrid Cloud and Open-source Technologies](https://kccnceu20.sched.com/event/ZejH/sending-billions-of-payments-using-hybrid-open-source-serverless-edward-wilde-bruno-miguel-custodio-form3)| Edward Wilde & Bruno Miguel Custódio | Kubecon EU| 02-Apr-2020 |
+| Kubernetes the easy way with k3sup, OpenFaaS and inlets | Alex Ellis & Alistair Hey | Online Webinar for Traefik | 12-Mar-2022 |
 
 #### Blog posts and write-ups 2020
 
@@ -69,6 +74,12 @@ It would be great to hear from you especially if you have any of the above and w
 
 | Blog/repo name and description                                          | Author       | Site     | Date        |
 |-------------------------------------------------------------------------|--------------|----------|-------------|
+| [Get storage for your functions with Python and MongoDB](https://www.openfaas.com/blog/get-started-with-python-mongo/) | Alex Ellis | openfaas.com | 12-Feb-2020 |
+| [Build a Serverless appliance with faasd](https://blog.alexellis.io/deploy-serverless-faasd-with-cloud-init/) | Alex Ellis | alexellis.io | 06-Feb-2020 |
+| [Painless Serverless Development with Kubernetes, OpenFaaS and Okteto](https://www.openfaas.com/blog/painless-serverless-development/) | Ramiro Berrelleza | alexellis.io | 24-Jan-2020 |
+| [Introduction to OpenFaaS: Serverless made accessible](https://www.objectif-libre.com/en/blog/2020/01/17/openfaas-made-accessible/) | Florian Davasse | www.objectif-libre.com | 17-Jan-2020| 
+| [Applying GitOps to OpenFaaS with Flux Helm Operator](https://www.openfaas.com/blog/openfaas-flux/) | Stefan Prodan | www.openfaas.com | 16-Jan-2020| 
+| [OpenFaaS 3rd Birthday Celebrations](https://www.openfaas.com/blog/birthday-teamserverless/) | Alex Ellis | www.openfaas.com | 14-Jan-2020| 
 | [How To Get Started Contributing to OpenFaaS](https://blog.heyal.co.uk/developing-openfaas/)| Alistair Hey | blog.heyal.co.uk| 04-Jan-2020 |
 
 ### 2019
@@ -79,6 +90,7 @@ It would be great to hear from you especially if you have any of the above and w
 
 | Event name and description                                          | Speaker      | Location | Date        |
 |---------------------------------------------------------------------|--------------|----------|-------------|
+| [faasd - lightweight Serverless for your Raspberry Pi](https://blog.alexellis.io/faasd-for-lightweight-serverless/) | Alex Ellis | alexellis.io | 30-Dec-2020 |
 | [OpenFaaS Community Call - December OpenFaaS is 3!](https://www.youtube.com/watch?v=wXnYx-wD4Zk) | Various | Online webinar | 18-Dec-2019 |
 | [OpenFaaS Cloud + Linkerd: A Secure, Multi-Tenant Serverless Platform @ KubeCon 2019, 3:20pm](https://kccncna19.sched.com/event/Uabn/openfaas-cloud-linkerd-a-secure-multi-tenant-serverless-platform-charles-pretzer-buoyant-alex-ellis-openfaas-ltd) | Charles Pretzer & Alex Ellis | San Diego, USA | 20-Nov-2019 |
 | [How we moved from JIRA to GitHub for fun and profit using Serverless @ Goto](https://gotocph.com/2019/sessions/1016) | Edward Wilde | Copenhagen, Denmark | 19-Nov-2019 |
@@ -145,6 +157,7 @@ It would be great to hear from you especially if you have any of the above and w
 |-------------------------------------------------------------------------|--------------|----------|-------------|
 | [faasd - lightweight Serverless for your Raspberry Pi](https://blog.alexellis.io/faasd-for-lightweight-serverless/)| Alex Ellis | blog.alexellis.io | 30-Dec-2019 |
 | [My 2019 in review - Hello Open Source!](https://blog.heyal.co.uk/My-2019/)| Alistair Hey | blog.heyal.co.uk| 30-Dec-2019 |
+| [Nodeless OpenFaaS with AWS EKS and Fargate](https://blog.alexellis.io/nodeless-openfaas-with-aws-eks-and-fargate/) | Alex Ellis | alexellis.io | 05-Dec-2019 |
 | [Build a CRUD API with Postgresql and Node.js With OpenFaaS](https://www.civo.com/learn/guide-to-build-a-crud-api-with-postgresl-and-node-js-with-openfaas)| Alex Ellis | www.civo.com | 19-Dec-2019 |
 | [Build ASP.NET Core APIs with Kubernetes and OpenFaaS](https://www.openfaas.com/blog/asp-net-core/)| Alex Ellis | www.openfaas.com| 03-Dec-2019 |
 | [Going Serverless with OpenFaaS and Golang - Building Optimized Templates](https://martinheinz.dev/blog/11) | Martin Heinz | martinheinz.dev | 29-Nov-2019 |
@@ -190,7 +203,7 @@ It would be great to hear from you especially if you have any of the above and w
 | [Favorite Tools - OpenFaaS](https://fischbacher.rocks/post/tools-openfaas/) | Markus Fischbacher | [fischbacher.rocks](fischbacher.rocks) | 5-Mar-2019 |
 | [Serverless with OpenFaaS](https://blog.cloudstack.pl/serverless-with-openfaas/) | Daniel Noworyta | blog.cloudstack.pl | 5-Mar-2019 |
 | [Experimenting with OpenFaaS](https://brandnameboredom.github.io/openfaas/2019/03/04/openfaas.html) | Brad Turner | https://brandnameboredom.github.io | 4-Mar-2019 |
-| [OpenFaas on Docker Swarm on Raspberry Pi](http://www.timlevett.com/2019/03/openfaas-on-docker-swarm-on-raspberry-pi.html) | Tim Levett | timlevett.com | 4-Mar-2019  |
+| [OpenFaaS on Docker Swarm on Raspberry Pi](http://www.timlevett.com/2019/03/openfaas-on-docker-swarm-on-raspberry-pi.html) | Tim Levett | timlevett.com | 4-Mar-2019  |
 | [Build your serverless functions with OpenFaaS on Azure](https://sajeetharan.com/2019/03/03/openfaas-revolution-is-here/) | Sajeetharan Sinnathurai | sajeetharan.com | 3-Mar-2019 |
 | [Artifactory and OpenFaaS – Containers Everywhere!](https://jfrog.com/blog/artifactory-and-openfaas-containers-everywhere/) | Leon Stigter | jfrog.com | 19-Feb-2019 |
 | [How to build a Serverless Single Page App](https://www.openfaas.com/blog/serverless-single-page-app/) | Alex Ellis | openfaas.com | 14-Feb-2019 |

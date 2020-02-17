@@ -191,6 +191,10 @@ The chosen tool for vendoring code in the project is [dep](https://github.com/go
 
 > Note: despite the availability of [Go modules](https://github.com/golang/go/wiki/Modules) in Go 1.11, they are not being used in the project at this time. If and when the decision is made to move, a complete overhaul of all repositories will need to be made in a coordinated fashion including: CI, releases, unit-, integration- and e2e-tests. This is not a trivial amount of effort.
 
+**An update on Go modules*
+
+A limited effort is being made by the maintainers to move some projects to Go Modules and Go 1.13. This approach will retain the use of the vendor folder, which is a valid strategy for adopting Go modules and is [documented in the Go wiki](https://github.com/golang/go/wiki/Modules). There are different trade-offs between using a vendor folder and not. If you do not understand these trade-offs well, you may explore the topic at your own leisure. We are not inviting the broader community to submit PRs to convert additional projects at this time.
+
 ### How are releases made?
 
 Releases are made by the *Project Lead* on a regular basis and when deemed necessary. If you want to request a new release then mention this on your PR or Issue.
@@ -299,7 +303,7 @@ If you can no-longer commit to being part of a team, then you may move to Commun
 
 #### Stepping-down and emeritus status
 
-After stepping-down, you will have an [emeritus status](https://www.lexico.com/en/definition/emeritus) and will be listed in the [BACKERS.md](/BACKERS.md) file and will have a place on the team page.
+After stepping-down, you may request to have an [emeritus status](https://www.lexico.com/en/definition/emeritus) and to be listed in the [BACKERS.md](/BACKERS.md) file for a period of time.
 
 > emeritus: (of the former holder of an office, especially a university professor) having retired but allowed to retain their title as an honour.
 
@@ -365,7 +369,9 @@ Getting the best out of Slack
 
 * Browse open issues in [openfaas/faas](https://github.com/openfaas/faas/issues)
 
-* Sign-up for the [2019 Trello board](http://bit.ly/2LGl6nd)
+* Join the [2020 Roadmap on Trello](https://trello.com/invite/b/5OpMyrBP/ade103a10ae1e38eb5d3eee7955260a9/2020-openfaas-roadmap)
+
+For commercial users, please feel free to ask about support, backlog prioritisation and feature development. Email sales@openfaas.com.
 
 ## License
 
