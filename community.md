@@ -78,9 +78,10 @@ It would be great to hear from you especially if you have any of the above and w
 |---------------------------------------------------------------------|--------------|----------|-------------|
 | [GitOps meets Serverless with OpenFaaS and Flux ](https://www.meetup.com/Weave-User-Group/events/269899027/) | Alex Ellis | Weave Online User Group | 29-Apr-2020 |
 | [Service Mesh and Serverless Chatbots with Linkerd, K8s and OpenFaaS](https://sg.com.mx/sgvirtual/sessions/service-mesh-and-serverless-chatbots-with-linkerd-k8s-and-openfaas/) | Sergio Méndez | SG Virtual Conference | 21-Apr-2020 |
+| [Serverless for Kubernetes with NATS and PLONK](https://youtu.be/J0zbYbvYiM8?t=1135) | Alex Ellis | NATS Connect | 16-Apr-2020 |
 | [The Need for a Cloud Native Tunnel](https://virtual.rejekts.io) | Alex Ellis | Virtual Cloud Native Rejekts | 1-Apr-2020 |
 | [TBS[13] Crossplane and OpenFaaS livestream](https://www.youtube.com/watch?v=XphQgB87U-s&feature=youtu.be)| Daniel Mangum & Alex Ellis | YouTube | 26-Mar-2020 |
-| [Kubernetes the easy way with k3sup, OpenFaaS and inlets](https://zoom.us/webinar/register/WN_UEhl9ieUT52BVQlhrSdZQw) | Alex Ellis & Alistair Hey | Online Webinar for Traefik | 12-Mar-2020 |
+| [Kubernetes the easy way with k3sup, OpenFaaS and inlets](https://www.youtube.com/watch?v=r4mEF8rtXWo) | Alex Ellis & Alistair Hey | Online Webinar for Traefik | 12-Mar-2020 |
 | [Service Mesh and Serverless Chatbots with Linkerd, K8s and OpenFaaS](https://www.meetup.com/de-DE/cloud-native-plus-gt/events/269147693/) | Sergio M. | Zoom | 12-Mar-2020 |
 
 Postponed events for 2020
@@ -102,6 +103,10 @@ Postponed events for 2020
 
 | Blog/repo name and description                                          | Author       | Site     | Date        |
 |-------------------------------------------------------------------------|--------------|----------|-------------|
+| [Self-hosting serverless with OpenFaaS](https://www.mskog.com/posts/self-hosting-serverless-with-openfaas/) | Magnus Skog | mskog.com | 03-May-2020 |
+| [Why I Created an OpenFaaS Template for COBOL](https://unnecessary.tech/posts/openfaas-cobol/) | Christopher De Vries | unnecessary.tech | 27-Apr-2020 |
+| [Call OpenFaaS Serverless Functions with Gloo API Gateway](https://medium.com/alterway/call-openfaas-serverless-functions-with-gloo-api-gateway-678a00710481?source=rss------kubernetes-5) | Hervé Leclerc | medium.com | 21-Apr-2020 |
+| [Data Pipelines with OpenFaas on K3s](https://medium.com/@yoav.nordmann/data-pipelines-with-openfaas-on-k3s-b92e97bc125b) | Yoav Nordmann | medium.com | 19-Apr-2020 |
 |[Tracking Stripe Payments with Slack and faasd](https://myedes.io/stripe-serverless-webhook-faasd/) | Mehdi Yedes | myedes.io | 04-Apr-2020
 |[Building Serverless CRUD services in Go with OpenFaaS, Arkade, MongoDB and k3d](https://dev.to/wingkwong/building-serverless-crud-services-in-go-with-openfaas-arkade-mongodb-and-k3d-1d93) | Wing-Kam Wong | dev.to | 29-Mar-2020 |
 |[Raspberry Pi Kubernetes Cluster with OpenFaaS for Serverless Functions](https://www.shogan.co.uk/kubernetes/raspberry-pi-kubernetes-cluster-with-openfaas-for-serverless-functions-part-4/) | Sean Duffy | shogan.co.uk | 24-Mar-2020 |
