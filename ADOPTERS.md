@@ -52,6 +52,8 @@ This is a list of adopters of OpenFaaS
 
 * [NGC](https://www.ngcsoftware.com/)
 
+* [PathfinderZA](https://www.pathfinderza.com) - PathfinderZA is an IOT security firm selling underground sensors that transmits warnings to users if a person or vehicle goes past it. We're using OpenFaas, with Dockerised functions written in Java (Quarkus) and Rust (Actix/Rocket-RS).
+
 * [Pentium Network](https://www.pentium.network/)
 
 * [PiperCI](https://piperci.dreamer-labs.net) - PiperCI is a task management framework that provides users with a standard library of CI/CD-centric tasks and the [OpenFaas](https://www.openfaas.com/) and [Kubernetes](https://kubernetes.io/) based infrastructure required to run them. PiperCI can be used in conjunction with existing CI/CD orchestrators like GitlabCI, Jenkins, TravisCI, or others to create a more scalable, robust, and functional CI/CD system.
@@ -59,6 +61,14 @@ This is a list of adopters of OpenFaaS
 * [Press Association](https://www.pressassociation.com/) - Press Association is using OpenFaaS in development and production as part of our deployment pipeline.
 
 * [Ratehub](https://www.ratehub.ca) - Ratehub is Canada's leading personal finance comparison site. We're breaking apart our monolithic PHP and Java codebases into Node, PHP and Java OpenFaaS functions; there's not much that we don't plan on moving to FaaS!
+
+* [Rapid Circle](https://www.rapidcircle.com) is using OpenFaaS within a Azure Kubernetes cluster to host a large amount of micro-services aiming at automating core activities of their Microsoft 365 Cloud Managed Services offering. Robustness, speed, scalable and simplicity have been major reasons to favor OpenFaaS over Azure Functions.
+
+* [Sprucee](https://spruce.casa) - We use [faasd](https://github.com/openfaas/faasd) as part of our base Encryption as a Service platform which were manually managed docker containers. As NATS based platform we were able to scale to every size we want, but deployment takes many labor time as we need to deal with OS level and customer limitations. Now we can use "faas install/up" to accomplish 80% of deployment effort.
+
+* [SURF](https://www.surf.nl) - [The Green Village](https://www.thegreenvillage.org/) is a living lab at Delft University of Technology. It is an experimental, real-life setting with the goal to accelerate innovation for a sustainable future. [SURF](https://www.surf.nl/), a cooperative association of Dutch educational and research institutions providing digital infrastructure and ICT services, has developed a [digital platform](https://youtu.be/_WYVzoBuWKk) for The Green Village that uses OpenFaaS to classify and sort incoming sensor data at scale.
+
+* [SURFsara IoT Platform for Sensemakers](https://github.com/sensemakersamsterdam/sensemakers-iot-platform) - The SURFsara IoT Platform for Sensemakers is a platform for storing, monitoring, visualising and analyzing sensor data. It is a collaboration platform designed to host multiple projects carried by the Sensemakers community. In addition, there is a project dedicated to experimentation, available for everyone to use. All data within the platform is shared. OpenFaaS serverless functions give access to the platform through an HTTP entry point, take care of the metadata extraction and enable custom event-driven actions.
 
 * [Transmute Industries](https://www.transmute.industries/) - "At Transmute we use OpenFaaS to develop identity and access integrations leveraging decentralized identities that integrate with legacy IAM systems. OpenFaaS helps Transmute and our customers avoid vendor lock in, encourages modularity, and helps us rapidly develop and release integrations for customers."
 
