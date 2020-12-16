@@ -238,21 +238,22 @@ In the OpenFaaS community there are four levels of structure or maintainership:
 
 #### Core Team
 
+The Core Team have the ear of the Project Lead. They help with strategy, project maintenance, community management, and make a regular commitment of time to the project on a weekly basis.
+
+Each member will be responsible for, or be a subject-matter-expert (SME) for a sub-system of OpenFaaS and will be granted write (push) access to the related repositories.
+
+The Core Team have the same responsibilities and perks of the Membership Team, in addition will need to keep in close contact with the rest of the Core Team and the Project Lead.
+
+* Members are listed on the project homepage as being part of the Core group and are shown first.
+* Members are expected to attend 1:1 Zoom calls with the Project Lead up to once per month
+* Members will notify the Project Lead and Core Team of any leave of a week or more and set a status in Slack of "away".
+
+Core Team attend all project meetings and calls. Allowances will be made for timezones and other commitments.
+
 The Core Team includes:
 
 - Alex Ellis (@alexellis) - Lead
 - Lucas Roesler (@LucasRoesler) - SME for logs, provider model and secrets
-
-The Core Team have the ear of the Project Lead. They help with strategy, project maintenance, community management, and make a regular commitment of time to the project on a weekly basis. The Core Team will usually be responsible for, or be a subject-matter-expert (SME) for a sub-system of OpenFaaS. Core Team may be granted write (push) access to one or more sub-systems.
-
-The Core Team gain access to a private *core* channel and are required to participate on a regular basis.
-
-The Core Team have the same responsibilities and perks of the Membership Team, in addition will need to keep in close contact with the rest of the Core Team and the Project Lead.
-
-* Core Team are expected to attend 1:1 Zoom calls with the Project Lead up to once per month
-* Core Team members will notify the Project Lead and Core Team of any leave of a week or more and set a status in Slack of "away".
-
-Core Team attend all project meetings and calls. Allowances will be made for timezones and other commitments.
 
 #### Members Team
 
@@ -303,8 +304,6 @@ You may move from the Core Team to the Members Team. Please notify the *Project 
 If you can no-longer commit to being part of a team, then you may move to Community Contributor status and retain your access to Derek for as long as it is useful to you.
 
 #### Stepping-down and emeritus status
-
-After stepping-down, you may request to have an [emeritus status](https://www.lexico.com/en/definition/emeritus) and to be listed in the [BACKERS.md](/BACKERS.md) file for a period of time.
 
 > emeritus: (of the former holder of an office, especially a university professor) having retired but allowed to retain their title as an honour.
 

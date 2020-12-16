@@ -1,16 +1,18 @@
-FROM teamserverless/license-check:0.3.6 as license-check
+FROM --platform=${BUILDPLATFORM:-linux/amd64} teamserverless/license-check:0.3.9 as license-check
 
-FROM golang:1.13 as build
+FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.13 as build
 
 ENV GO111MODULE=off
 ENV CGO_ENABLED=0
 
-ARG GIT_COMMIT_SHA
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+
+ARG GIT_COMMIT
 ARG GIT_COMMIT_MESSAGE
-ARG VERSION='dev'
-ARG ARCH="x86_64"
-ARG GOOS=linux
-ARG GOARM
+ARG VERSION
 
 COPY --from=license-check /license-check /usr/bin/
 
@@ -29,22 +31,22 @@ COPY plugin         plugin
 COPY version        version
 COPY scaling        scaling
 COPY pkg            pkg
-COPY main.go      .
+COPY main.go        .
+RUN license-check -path ./ --verbose=false "Alex Ellis" "OpenFaaS Authors" "OpenFaaS Author(s)"
+
 
 # Run a gofmt and exclude all vendored code.
-RUN license-check -path ./ --verbose=false "Alex Ellis" "OpenFaaS Authors" "OpenFaaS Author(s)" \
-    && test -z "$(gofmt -l $(find . -type f -name '*.go' -not -path "./vendor/*"))" \
-    && CGO_ENABLED=${CGO_ENABLED} go test $(go list ./... | grep -v integration | grep -v /vendor/ | grep -v /template/) -cover \
-    && GOARM=${GOARM} CGO_ENABLED=${CGO_ENABLED} GOOS=linux go build --ldflags "-s -w \
-    -X github.com/openfaas/faas/gateway/version.GitCommitSHA=${GIT_COMMIT_SHA}\
-    -X \"github.com/openfaas/faas/gateway/version.GitCommitMessage=${GIT_COMMIT_MESSAGE}\"\
+RUN test -z "$(gofmt -l $(find . -type f -name '*.go' -not -path "./vendor/*"))"
+RUN go test $(go list ./... | grep -v integration | grep -v /vendor/ | grep -v /template/) -cover
+
+RUN CGO_ENABLED=${CGO_ENABLED} GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build --ldflags "-s -w \
+    -X \"github.com/openfaas/faas/gateway/version.GitCommitSHA=${GIT_COMMIT}\" \
+    -X \"github.com/openfaas/faas/gateway/version.GitCommitMessage=${GIT_COMMIT_MESSAGE}\" \
     -X \"github.com/openfaas/faas/gateway/version.Version=${VERSION}\" \
-    -X github.com/openfaas/faas/gateway/types.Arch=${ARCH}"\
+    -X github.com/openfaas/faas/gateway/types.Arch=${TARGETARCH}" \
     -a -installsuffix cgo -o gateway .
 
-FROM alpine:3.11
-
-ARG ARCH="x86_64"
+FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.12 as ship
 
 LABEL org.label-schema.license="MIT" \
     org.label-schema.vcs-url="https://github.com/openfaas/faas" \
@@ -66,8 +68,10 @@ ENV https_proxy     ""
 
 COPY --from=build /go/src/github.com/openfaas/faas/gateway/gateway    .
 COPY assets     assets
-RUN sed -ie s/x86_64/${ARCH}/g assets/script/funcstore.js && \
-  rm assets/script/funcstore.jse
+
+ARG TARGETPLATFORM
+
+RUN if [ "$TARGETPLATFORM" = "linux/arm/v7" ] ; then sed -ie s/x86_64/armhf/g assets/script/funcstore.js ; elif [ "$TARGETPLATFORM" = "linux/arm64" ] ; then sed -ie s/x86_64/arm64/g assets/script/funcstore.js; fi
 
 RUN chown -R app:app ./
 
