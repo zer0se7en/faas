@@ -55,8 +55,8 @@ It would be great to hear from you especially if you have any of the above and w
 | [The explosive growth of CNCF, what is Kubernetes and independent open source](https://blog.newrelic.com/engineering/observy-mcobservface-episode-no-2-alex-ellis/) | Observy McObservface | 29-07-2020 |
 | [How OpenFaaS Found its groove with arm](https://www.worksonarm.com/blog/how-openfaas-found-its-groove-with-arm/) | WorksOnArm | 20-04-2020 |
 | [POPCAST Episode 5 - Going independent and Cloud Native Open Source](https://www.youtube.com/watch?v=66mMC9w-dM4) | Popcast | 09-04-2020 |
-| [Serverless, FaaS, and Kubernetes Tools with Alex Ellis of OpenFaaS DevOps and Docker Talk](https://podcast.bretfisher.com/episodes/serverless-faas-and-kubernetes-tools-with-alex-ellis-of-openfaas) | Bret Fisher Docker and DevOps Talk| 24-Apr-2020 | 
-| [Serverless Functions with Alex Ellis of OpenFaaS: DevOps and Docker Live Show (Ep 68)](https://www.youtube.com/watch?v=5zDvjIkMf9I) | Bret Fisher Docker and DevOps | 16-Jan-2020 | 
+| [Serverless, FaaS, and Kubernetes Tools with Alex Ellis of OpenFaaS DevOps and Docker Talk](https://podcast.bretfisher.com/episodes/serverless-faas-and-kubernetes-tools-with-alex-ellis-of-openfaas) | Bret Fisher Docker and DevOps Talk| 24-Apr-2020 |
+| [Serverless Functions with Alex Ellis of OpenFaaS: DevOps and Docker Live Show (Ep 68)](https://www.youtube.com/watch?v=5zDvjIkMf9I) | Bret Fisher Docker and DevOps | 16-Jan-2020 |
 | [Serverless and OpenFaas with Alex Ellis](https://hanselminutes.com/612/serverless-and-openfaas-with-alex-ellis) | The Hanselminutes Podcast | 29-Dec-2019 |
 | [OpenFaaS Creator on Open Source’s Community-Funding Model](https://thenewstack.io/openfaas-creator-on-open-sources-community-funding-model/) | The New Stack | 11-Jul-2019 |
 | [Running functions anywhere with OpenFaaS - featuring Alex Ellis](https://changelog.com/podcast/343) | The Changelog | 25-Apr-2019 |
@@ -73,12 +73,22 @@ It would be great to hear from you especially if you have any of the above and w
 | [Cloud Native Tools for Developers with Alex Ellis and Alistair Hey](https://youtu.be/r4mEF8rtXWo) | Alex Ellis and Alistair Hey | 13-Mar-2019 |
 | [Getting Beyond FaaS: The PLONK Stack for Kubernetes Developers](https://www.youtube.com/watch?v=NckMekZXRt8) | Alex Ellis | 21-Nov-2019 |
 | [OpenFaaS Cloud + Linkerd: A Secure, Multi-Tenant Serverless Platform](https://www.youtube.com/watch?v=sD7hCwq3Gw0) | Charles Pretzer & Alex Ellis | 20-Nov-2019 |
-| [How LivePerson is Tailoring its Conversational Platform Using OpenFaaS - ](https://youtu.be/bt06Z28uzPA) | Simon Pelczer & Ivana Yovcheva | 23-May-2019 | 
+| [How LivePerson is Tailoring its Conversational Platform Using OpenFaaS - ](https://youtu.be/bt06Z28uzPA) | Simon Pelczer & Ivana Yovcheva | 23-May-2019 |
 | [OpenFaaS Community Call - December OpenFaaS is 3!](https://www.youtube.com/watch?v=wXnYx-wD4Zk) | Various | 18-Dec-2019 |
 | [OpenFaaS Cloud in 100 seconds (ofc-bootstrap)](https://www.youtube.com/watch?v=Sa1VBSfVpK0&index=21&list=PLlIapFDp305DiIRhJFNzMuJXoBnzKdtpi) | Alex Ellis | 31-Jan-2019 |
 | [GOTO 2018, Serverless Beyond the Hype, Alex Ellis](https://www.youtube.com/watch?v=yOpYYYRuDQ0) | Alex Ellis | 30-Jan-2019 |
 | [Digital Transformation of Vision Banco Paraguay with Serverless Functions @ KubeCon](https://kccna18.sched.com/event/GraO/digital-transformation-of-vision-banco-paraguay-with-serverless-functions-alex-ellis-vmware-patricio-diaz-vision-banco-saeca) | Alex Ellis & Patricio Diaz | 13-Dec-2018 |
 | [Introducing "faas" - Cool Hacks Keynote at Dockercon 2017](https://blog.docker.com/2017/04/dockercon-2017-mobys-cool-hack-sessions/) | Alex Ellis | 04-April-2017 |
+
+### 2021
+
+#### Blog posts and write-ups 2021
+
+[Back to top](#openfaas-community)
+
+| Blog/repo name and description                                          | Author       | Site     | Date        |
+|-------------------------------------------------------------------------|--------------|----------|-------------|
+| [How I discovered faas and what it changed for me](https://releasecandidate.dev/posts/2021/discovery-faasd-and-openfaas/) | Peter Thaleikis | releasecandidate.dev | 05-01-2021 |
 
 ### 2020
 
@@ -155,9 +165,9 @@ Postponed events for 2020
 | [Get storage for your functions with Python and MongoDB](https://www.openfaas.com/blog/get-started-with-python-mongo/) | Alex Ellis | openfaas.com | 12-Feb-2020 |
 | [Build a Serverless appliance with faasd](https://blog.alexellis.io/deploy-serverless-faasd-with-cloud-init/) | Alex Ellis | alexellis.io | 06-Feb-2020 |
 | [Painless Serverless Development with Kubernetes, OpenFaaS and Okteto](https://www.openfaas.com/blog/painless-serverless-development/) | Ramiro Berrelleza | alexellis.io | 24-Jan-2020 |
-| [Introduction to OpenFaaS: Serverless made accessible](https://www.objectif-libre.com/en/blog/2020/01/17/openfaas-made-accessible/) | Florian Davasse | www.objectif-libre.com | 17-Jan-2020| 
-| [Applying GitOps to OpenFaaS with Flux Helm Operator](https://www.openfaas.com/blog/openfaas-flux/) | Stefan Prodan | openfaas.com| 16-Jan-2020| 
-| [OpenFaaS 3rd Birthday Celebrations](https://www.openfaas.com/blog/birthday-teamserverless/) | Alex Ellis | openfaas.com| 14-Jan-2020| 
+| [Introduction to OpenFaaS: Serverless made accessible](https://www.objectif-libre.com/en/blog/2020/01/17/openfaas-made-accessible/) | Florian Davasse | www.objectif-libre.com | 17-Jan-2020|
+| [Applying GitOps to OpenFaaS with Flux Helm Operator](https://www.openfaas.com/blog/openfaas-flux/) | Stefan Prodan | openfaas.com| 16-Jan-2020|
+| [OpenFaaS 3rd Birthday Celebrations](https://www.openfaas.com/blog/birthday-teamserverless/) | Alex Ellis | openfaas.com| 14-Jan-2020|
 | [How To Get Started Contributing to OpenFaaS](https://blog.heyal.co.uk/developing-openfaas/)| Alistair Hey | blog.heyal.co.uk| 04-Jan-2020 |
 ### 2019
 
@@ -603,8 +613,7 @@ Official providers developed and supported by the OpenFaaS project
 | Project name and description                                         | Author     | Site      | Status      |
 |----------------------------------------------------------------------|------------|-----------|-------------|
 | **faas-netes**- Kubernetes provider | OpenFaaS | [github.com](https://github.com/openfaas/faas-netes) | Supported |
-| **faas-swarm** - Docker Swarm provider | OpenFaaS | [github.com](https://github.com/openfaas/faas-swarm) | Supported |
-| **openfaas-operator** - Kubernetes Operator provider | OpenFaaS | [github.com](https://github.com/openfaas-incubator/openfaas-operator) | Incubation |
+| **faasd**- containerd single-host provider | OpenFaaS | [github.com](https://github.com/openfaas/faasd) | Supported |
 
 Community providers actively being developed and/or supported by a third-party
 
@@ -615,12 +624,12 @@ Community providers actively being developed and/or supported by a third-party
 | **faas-federation** - federation provider to route between one or more providers | Ed Wilde / Alex Ellis | [github.com](https://github.com/openfaas-incubator/faas-federation) | Inception |
 | **faas-fargate** - AWS Fargate provider | Edward Wilde | [github.com](https://github.com/ewilde/faas-fargate) | Incubation |
 | **faas-lambda** - AWS Lambda provider | Ed Wilde / Alex Ellis | [sales@openfaas.com](mailto:sales@openfaas.com) | Incubation |
-| **faas-containerd** - containerd provider for single node / edge | Alex Ellis | [github.com](https://github.com/alexellis/faas-containerd) | Inception |
 
 Community providers no-longer being maintained
 
 | Project name and description                                         | Author     | Site      | Status      |
 |----------------------------------------------------------------------|------------|-----------|-------------|
+| **faas-swarm** - Docker Swarm provider | OpenFaaS | [github.com](https://github.com/openfaas/faas-swarm) | Deprecated |
 | **faas-rancher** - Rancher/Cattle provider | Ken Fukuyama | [github.com](https://github.com/kenfdev/faas-rancher) | Inception |
 | **faas-dcos** - DCOS provider | Alberto Quario | [github.com](https://github.com/realbot/faas-dcos) | Inception  |
 | **faas-hyper** - Hyper.sh provider | Hyper | [github.com](https://github.com/hyperhq/faas-hyper) | Inception |

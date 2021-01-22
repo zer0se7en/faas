@@ -404,10 +404,10 @@ definitions:
         properties:
           provider:
             type: string
-            example: faas-swarm
+            example: faas-netes
           orchestration:
             type: string
-            example: swarm
+            example: kubernetes
           version:
             type: object
             description: Version of the OpenFaaS Provider
@@ -461,7 +461,7 @@ definitions:
         example: nodeinfo
       network:
         type: string
-        description: Docker swarm network, usually func_functions
+        description: Network, usually func_functions for Swarm (deprecated)
         example: func_functions
       image:
         type: string
