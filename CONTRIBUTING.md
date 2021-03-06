@@ -4,6 +4,34 @@
 
 Guidelines for contributing.
 
+### First impressions - introducing yourself and your use-case
+
+One of the best ways to participate within a new open source communities is to introduce yourself and your use-case. This builds goodwill, but also means the community can start to understand your needs and how best to help you.
+
+Given that the community is made up of volunteers, making a good first impression is important to getting their ear and attention. 
+
+Here is a simple introduction you could try:
+
+> "We at Company Y have an issue with X, and would like some help. What we're trying to achieve is Z" 
+
+The more context you can give the community, the more the community can be of help to you. If you are using OpenFaaS as a hobbyist or as a student, then please also let us know so that we can decide how to prioritise all the requests we receive from users. 
+
+A common example of a poor introduction would be asking for technical support without providing any context, or introduction.
+
+> "We are running into issue X. Can you fix it?"
+> 
+> "We also had this issue"
+
+These kinds of interactions start with "we" and since we is a pronoun, it becomes an anonymous request detached from any context or relationship with the community. This is made worse if you do not list your employer on your GitHub profile or Slack account. The fix is easy, just say who you are and what your interest is, and what your ideal outcome is.
+
+The primary ways to engage with the community are via Slack, GitHub Issues and paid support
+
+* GitHub Issues - for suspected bugs and feature requests, fill out the whole template
+* Slack - to share ideas, to chat with the community and to request help if things don't appear to be working as expected, or you're trying something new
+* Paid support - you will have an agreed way to contact OpenFaaS Ltd for direct support and help
+
+See also: [The no-excuses guide to introducing yourself to a new open source project](https://opensource.com/education/13/7/introduce-yourself-open-source-project)
+
 ### How can I get involved?
 
 The Slack community is the best place to keep up to date with the project and to get help contributing. Here we exchange ideas, ask questions and chat about OpenFaaS. There are also channels for Raspberry Pi/ARM, Kubernetes and other cloud-native topics. (*See below for how to join*)
@@ -137,7 +165,7 @@ If you feel there is an issue with OpenFaaS or were unable to get the help you n
 
 * What kind of support can I expect for free?
 
-    If you are using one of the Open Source projects within the openfaas or openfaas-incubator repository, then help is offered on a good-will basis by volunteers. You can also request help from employees of OpenFaaS Ltd who host the OpenFaaS projects.
+    If you are using one of the Open Source projects within the openfaas or openfaas-incubator repository, then help is offered on a good-will basis by volunteers. Support customers can request help from [employees of OpenFaaS Ltd](https://openfaas.com/support/).
 
     Please be respectful of volunteer time, it is often limited to evenings and weekends. The person you are requesting help from may not reside in your timezone. 
 
@@ -175,29 +203,24 @@ If you feel there is an issue with OpenFaaS or were unable to get the help you n
 
     More information, a use-case, or context may be required for the change to be accepted.
 
+* What if I am a GitHub Sponsor?
+
+    If you [sponsor OpenFaaS on GitHub](https://github.com/sponsors/openfaas), then you will show up as a Sponsor on your issues and PRs which is one way to show your support for the community and project. Whilst the entry-level sponsorship is only 25 USD / mo, you will benefit from access to regular updates on project development via the [Treasure Trove portal](https://faasd.exit.openfaas.pro/function/trove/). Your company can also take up a GitHub Sponsorship using their GitHub organisation's existing billing relationship.
+
 * What if I need more than that?
 
-    If you're a company using any of these projects, you can get the following through a support agreement with OpenFaaS Ltd so that the time can be paid for to help your business.
+    If you're a company using any of these projects, you can get the following through a [support agreement with OpenFaaS Ltd](https://openfaas.com/support/) so that the time can be paid for to help your business.
 
     A support agreement can be tailored to your needs, you may benefit from support, if you need any of the following:
 
-    * responses within N hours/days on issues/PRs
+    * priority responses to issues/PRs
     * feature prioritisation
-    * urgent help
+    * emergency help via Zoom
     * 1:1 consultations
-    * or any other level of professional services
 
 #### I need to add a dependency
 
-The concept of `vendoring` is used in projects written in Go. This means that a copy of the source-code of dependencies is stored within each repository in the `vendor` folder. It allows for a repeatable build and isolates change.
-
-The chosen tool for vendoring code in the project is [dep](https://github.com/golang/dep).
-
-> Note: despite the availability of [Go modules](https://github.com/golang/go/wiki/Modules) in Go 1.11, they are not being used in the project at this time. If and when the decision is made to move, a complete overhaul of all repositories will need to be made in a coordinated fashion including: CI, releases, unit-, integration- and e2e-tests. This is not a trivial amount of effort.
-
-**An update on Go modules*
-
-A limited effort is being made by the maintainers to move some projects to Go Modules and Go 1.13. This approach will retain the use of the vendor folder, which is a valid strategy for adopting Go modules and is [documented in the Go wiki](https://github.com/golang/go/wiki/Modules). There are different trade-offs between using a vendor folder and not. If you do not understand these trade-offs well, you may explore the topic at your own leisure. We are not inviting the broader community to submit PRs to convert additional projects at this time.
+All projects use [Go modules](https://github.com/golang/go/wiki/Modules) and vendoring. The concept of `vendoring` is still broadly used in projects written in Go. This means that a copy of the source-code of dependencies is stored within each repository in the `vendor` folder. It allows for a repeatable build and isolates change.
 
 ### How are releases made?
 

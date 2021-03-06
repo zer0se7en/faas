@@ -26,10 +26,8 @@ const NameExpression = "-a-zA-Z_0-9."
 
 func main() {
 	if len(version.GitCommitMessage) == 0 {
-		version.GitCommitMessage = "Place-holder for commit message"
+		version.GitCommitMessage = "See GitHub for latest changes"
 	}
-
-	// log.Printf("Commit: %s", version.GitCommitMessage)
 
 	osEnv := types.OsEnv{}
 	readConfig := types.ReadConfig{}
@@ -119,7 +117,9 @@ func main() {
 
 	decorateExternalAuth := handlers.MakeExternalAuthHandler
 
-	faasHandlers.Proxy = handlers.MakeForwardingProxyHandler(reverseProxy, functionNotifiers, functionURLResolver, functionURLTransformer, nil)
+	faasHandlers.Proxy = handlers.MakeCallIDMiddleware(
+		handlers.MakeForwardingProxyHandler(reverseProxy, functionNotifiers, functionURLResolver, functionURLTransformer, nil),
+	)
 
 	faasHandlers.ListFunctions = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer, serviceAuthInjector)
 	faasHandlers.DeployFunction = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer, serviceAuthInjector)
@@ -144,7 +144,7 @@ func main() {
 		MaxPollCount:         uint(1000),
 		SetScaleRetries:      uint(20),
 		FunctionPollInterval: time.Millisecond * 100,
-		CacheExpiry:          time.Second * 5, // freshness of replica values before going stale
+		CacheExpiry:          time.Millisecond * 250, // freshness of replica values before going stale
 		ServiceQuery:         externalServiceQuery,
 	}
 
@@ -183,8 +183,6 @@ func main() {
 
 	prometheusQuery := metrics.NewPrometheusQuery(config.PrometheusHost, config.PrometheusPort, &http.Client{})
 	faasHandlers.ListFunctions = metrics.AddMetricsHandler(faasHandlers.ListFunctions, prometheusQuery)
-	faasHandlers.Proxy = handlers.MakeCallIDMiddleware(faasHandlers.Proxy)
-
 	faasHandlers.ScaleFunction = handlers.MakeForwardingProxyHandler(reverseProxy, forwardingNotifiers, urlResolver, nilURLTransformer, serviceAuthInjector)
 
 	if credentials != nil {
